@@ -5,11 +5,12 @@ function httpsURL(value){
   try {const u=new URL(String(value));return u.protocol==='https:'&&!u.username&&!u.password?u:null;}catch{return null;}
 }
 export function researchInput(body){
-  if(!body||typeof body.fullName!=='string'||typeof body.approvedProfileUrl!=='string')throw Error('Provide a participant name and an approved professional profile URL.');
+  if(!body||typeof body.fullName!=='string'||(body.approvedProfileUrl!=null&&typeof body.approvedProfileUrl!=='string'))throw Error('Provide a participant name and, optionally, an approved professional profile URL.');
   const fullName=body.fullName.trim();
   if(fullName.length<2||fullName.length>160||/[\u0000-\u001f]/.test(fullName))throw Error('The participant name must be between 2 and 160 characters.');
-  const profile=httpsURL(body.approvedProfileUrl);
-  if(!profile||body.approvedProfileUrl.length>2048||profile.hostname==='localhost'||/^[\d.:]+$/.test(profile.hostname)||profile.hostname.endsWith('.local'))throw Error('Use an approved public HTTPS professional profile.');
+  const rawProfile=body.approvedProfileUrl?.trim()||'';
+  const profile=rawProfile?httpsURL(rawProfile):null;
+  if(rawProfile&&(!profile||rawProfile.length>2048||profile.hostname==='localhost'||/^[\d.:]+$/.test(profile.hostname)||profile.hostname.endsWith('.local')))throw Error('Use an approved public HTTPS professional profile.');
   return {fullName,profile};
 }
 export async function handleResearch(request,env,fetcher=fetch){
@@ -28,7 +29,7 @@ export async function handleResearch(request,env,fetcher=fetch){
   const recent=(recentRequests.get(identity)||[]).filter(t=>t>now-60000);
   if(recent.length>=20)return json({error:'Please wait a minute before running more searches.'},429);
   recent.push(now);recentRequests.set(identity,recent);
-  const query=`"${input.fullName.replaceAll('"',' ')}" professional employment career education biography ${input.profile.href}`;
+  const query=`"${input.fullName.replaceAll('"',' ')}" professional employment career education biography ${input.profile?.href||''}`;
   try{
     const response=await fetcher('https://api.exa.ai/search',{method:'POST',headers:{'content-type':'application/json','x-api-key':env.EXA_API_KEY},body:JSON.stringify({query,type:'auto',numResults:6,contents:{highlights:true}}),signal:AbortSignal.timeout(25000)});
     if(!response.ok){const status=response.status;return json({error:status===402?'The configured Exa account has no available credits.':status===401?'Exa rejected the configured API key.':status===429?'Exa is rate limiting requests. Please try again shortly.':'Exa could not complete this search.'},status===401||status===402?503:status===429?429:502);}

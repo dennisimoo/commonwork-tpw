@@ -75,9 +75,9 @@ Member reports optionally map `credit_days_applied` and `credit_evidence`. Only 
 
 Local preview reads EXA_API_KEY from environment, or the existing active_key in /Users/dennis/exa_keys.json. The CLI and local server use that same active selection. No key is included in source, browser assets, reports, or archives. Production uses the secret EXA_API_KEY configured through Sites.
 
-POST /api/research accepts only a name and approved public HTTPS professional profile URL. It requests up to six real Exa sources for professional employment/education context, returns source URLs, highlights, available publication dates and retrieval time, and labels identity matching unconfirmed. It does not search prison status, estimate risk, infer income, or write to outcome metrics. Source candidates can be saved for staff review in tab memory and exported as evidence. No result proves three-year non-return or program causation.
+POST /api/research accepts a name and an optional approved public HTTPS professional profile URL. It requests up to six real Exa sources for professional employment/education context, returns source URLs, highlights, available publication dates and retrieval time, and labels identity matching unconfirmed. It does not search prison status, estimate risk, infer income, or write to outcome metrics. Source candidates can be saved for staff review in tab memory and exported as evidence. No result proves three-year non-return or program causation.
 
-Requests require same-origin JSON, bounded inputs and an approved public profile. The owner-private hosted Site supplies the access boundary. There is a small per-isolate throttle for accidental repeated requests, not a distributed quota system. Do not change Site access to public without adding appropriate endpoint authorization and usage controls.
+Requests require same-origin JSON and bounded inputs. An approved public professional profile is optional and improves identity review. Name-only results require careful disambiguation. The owner-private hosted Site supplies the access boundary. There is a small per-isolate throttle for accidental repeated requests, not a distributed quota system. Do not change Site access to public without adding appropriate endpoint authorization and usage controls.
 
 ```sh
 node scripts/check.mjs

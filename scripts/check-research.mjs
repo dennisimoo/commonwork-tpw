@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {handleResearch,researchInput} from '../server/research.mjs';
 assert.throws(()=>researchInput({fullName:'Test Name',approvedProfileUrl:'javascript:alert(1)'}));
 assert.throws(()=>researchInput({fullName:'Test Name',approvedProfileUrl:'https://localhost/'}));
+assert.equal(researchInput({fullName:'Test Name'}).profile,null);
 const request=(body,origin='https://example.com')=>new Request('https://example.com/api/research',{method:'POST',headers:{'content-type':'application/json',origin},body:JSON.stringify(body)});
 const input={fullName:'Test Name',approvedProfileUrl:'https://example.org/profile'};
 assert.equal((await handleResearch(request(input),{})).status,503);
