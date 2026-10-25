@@ -62,15 +62,19 @@ npx wrangler secret put TPW_SETUP_TOKEN
 
 The administrator enters this setup code once and chooses their own username/password. Afterwards setup is disabled by a database constraint. Optional `OPENAI_API_KEY` and `EXA_API_KEY` Worker secrets enable the separate public-story researcher. Keys never belong in browser code, Git, or Wrangler vars.
 
-### GitHub deployments
+### Automatic deployments with Cloudflare Builds
 
-`.github/workflows/deploy.yml` checks every push/PR. Successful main-branch checks apply D1 migrations and deploy the Worker. Deployment also supports manual dispatch. Deployments are serialized. PRs never deploy.
+Cloudflare Builds connects directly to the private `dennisimoo/commonwork-tpw` repository. Pushes to `main` run the checks, apply D1 migrations and deploy the Worker. GitHub Actions is not used.
 
-Configure the repository:
+Build settings:
 
-- Secret `CLOUDFLARE_API_TOKEN`: an API token with Workers Scripts Edit and D1 Edit for the intended account, plus Account Settings Read if needed by Wrangler.
-- Variable `CLOUDFLARE_ACCOUNT_ID`: the intended Cloudflare account ID.
+- Production branch: `main`.
+- Root directory: `/`.
+- Build command: `npm run build:cloudflare` (source/calculation/auth/calendar checks, an isolated Worker + D1 workflow check, and a Wrangler dry run).
+- Deploy command: `npm run deploy` (remote D1 migrations followed by Worker deployment).
+- Node version: `24`, set in `.node-version` and the build environment.
+- Preview builds: disabled; branch changes do not touch the production database.
 
-The CI token stays in GitHub Secrets. A local Wrangler OAuth login is not a persistent CI credential. Worker secrets are provisioned separately and retained across deployments. The production environment can have GitHub approval rules added if required.
+Cloudflare manages the repository webhook and build deployment credential. Worker runtime secrets are retained across deployments. Build-time credentials are not bundled into the app.
 
 Account creation, invitations and reporting are implemented. Password reset and outbound email are not implemented in V1. Administrators share invitation links directly. The app has no individual participant records.

@@ -11,7 +11,8 @@
     "build": "wrangler deploy --dry-run --outdir dist",
     "dev:worker": "wrangler d1 migrations apply commonwork-tpw --local && wrangler dev --port 4175",
     "deploy": "wrangler d1 migrations apply commonwork-tpw --remote && wrangler deploy",
-    "check:worker": "node scripts/check-worker.mjs"
+    "check:worker": "node scripts/check-worker.mjs",
+    "build:cloudflare": "npm run check && npm run check:worker && npm run build"
   },
   "devDependencies": {
     "wrangler": "^4.152.0"
