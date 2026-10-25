@@ -28,6 +28,7 @@ Local accounts and reports persist in `.local/workspace.sqlite`, which is exclud
 - Choose weekly days, time and session length in Calendar. Scheduled hours are a plan, not attendance. Apply the calculated course hours explicitly.
 - Save changed courses as drafts or submit completed courses together (up to 30 changed courses per save, within D1 query and parameter limits).
 - Only submitted, completed courses enter TPW totals. Editing a submitted course preserves its last submission until it is submitted again.
+- Course hours, participants and completions accept an exact number or a range (e.g. 26–50). A range is counted at its midpoint (open-ended ranges at their lower bound), raised to match an exact completion count inside it, stored as `*_range`, and marks the course as an estimate without requiring a note.
 - Counts, dates, missing values and estimates are checked. Estimates or unavailable counts require a note. Concurrent edits cannot silently overwrite each other.
 - View organization or coalition reports, download CSV, and print a report.
 

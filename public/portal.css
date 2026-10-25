@@ -2,3 +2,4 @@
 .portal-test-banner{padding:9px 20px;font:10px Geist,sans-serif;text-align:center;color:#a17a33;background:#fff8e9;border-bottom:1px solid #f3e6c7}
 .portal-intro h1{max-width:480px;text-wrap:balance}.portal-expand-icon{transition:transform .15s ease;color:#a0aabb}.portal-cycle[open]>summary>.portal-expand-icon{transform:rotate(90deg)}.portal-calendar-header button img{display:block}@media(max-width:720px){.portal-intro h1{max-width:500px;font-size:38px;line-height:1.12}}
 .portal-auth-card .portal-demo-button{margin-top:18px;width:100%;background:#f6f9ff;border-color:#dce7ff;color:#3177f0;min-height:40px}.portal-demo-banner{padding:10px 20px;font:10px Geist,sans-serif;color:#6585b5;text-align:center;background:#f0f6ff;border-bottom:1px solid #dfebff}
+.portal-range-input{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:6px}.portal-range-input input[readonly]{background:#f4f6f9;color:#5b6575}

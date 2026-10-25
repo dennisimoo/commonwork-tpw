@@ -31,6 +31,9 @@ try{
  const draft=await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[payload],intent:'draft'}});assert.equal(draft.status,200);
  assert.equal((await call('/api/impact',{cookie:member.cookie})).body.records.length,original.length,'Drafts must not enter coalition totals.');
  const record=draft.body.records.find(r=>r.program===payload.program);assert.ok(record.id);
+ const ranged=await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[{...payload,program:'Range fixture',program_hours:999,program_hours_range:'21-50',participants:null,participants_range:'26-50',completions:40}],intent:'draft'}});assert.equal(ranged.status,200);
+ const rangedRow=ranged.body.records.find(r=>r.program==='Range fixture');assert.equal(rangedRow.program_hours,35,'Range midpoint replaces the typed value.');assert.equal(rangedRow.participants,40,'Range estimate is raised to an exact completion count inside the range.');assert.equal(rangedRow.participants_range,'26-50');assert.equal(rangedRow.data_basis,'estimated');
+ assert.equal((await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[{...payload,program:'Bad range fixture',participants_range:'7-9'}],intent:'draft'}})).status,400);
  const submitted=await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[record],intent:'submit'}});assert.equal(submitted.status,200);
  assert.equal((await call('/api/impact',{cookie:member.cookie})).body.records.length,original.length+1);
  assert.equal((await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[record],intent:'draft'}})).status,409,'Stale revisions cannot overwrite newer changes.');
