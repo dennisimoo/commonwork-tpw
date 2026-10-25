@@ -28,7 +28,7 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible";
-import { Status, fmt, dateLabel } from "./controls";
+import { Status, fmt, fmtRange, dateLabel } from "./controls";
 import { downloadCSV } from "./reports-page";
 function OrganizationCourses({
   organization,
@@ -87,9 +87,11 @@ function OrganizationCourses({
                     </small>
                   </div>
                   <div className="course-list-numbers">
-                    <strong>{fmt(row.participants)}</strong>
+                    <strong>
+                      {fmtRange(row.participants, row.participants_max)}
+                    </strong>
                     <span>
-                      participants{row.participants_range ? " · estimate" : ""}
+                      participants{row.participants_max ? " · estimate" : ""}
                     </span>
                   </div>
                   <div className="course-list-status">

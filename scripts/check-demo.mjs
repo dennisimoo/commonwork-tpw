@@ -29,7 +29,10 @@ let state = initialDemo(data);
 const original = structuredClone(state),
   row = state.records[0];
 assert.equal(state.records.length, 48);
-assert.equal(state.published.length, 44);
+const originalPublished = seed.records.filter(
+  (r) => r.status === "Completed",
+).length;
+assert.equal(state.published.length, originalPublished);
 const id = "custom_12345678-1234-1234-1234-123456789abc";
 state = saveFieldConfig(state, [
   ...state.fields.fields,
@@ -82,7 +85,7 @@ state = saveCourse(
   "Separate afternoon cohort with different participants.",
 );
 assert.equal(state.records.length, 49);
-assert.equal(state.published.length, 45);
+assert.equal(state.published.length, originalPublished + 1);
 const extra = state.records.find((r) => r.id !== row.id && r.duplicate_review);
 state = saveFieldConfig(
   state,
@@ -298,3 +301,8 @@ assert.equal(
 console.log(
   "PASS: drag reordering preserves section boundaries and values; unused field types can change while saved answers stay protected.",
 );
+
+const {normalizeRanges,normalizeActivity,summarizeActivity}=await import('../public/impact-core.mjs');
+const intervalRow=normalizeActivity(normalizeRanges({organization:'Range org',program:'Range course',facility:data.facilities[0],participants:30,participants_max:40,completions:35,completions_max:36,program_hours:10}));
+const interval=summarizeActivity([intervalRow]);assert.equal(interval.rate,null);assert.equal(interval.rateMin,35/40);assert.equal(interval.rateMax,1);assert.equal(interval.participantsMax,40);
+assert.throws(()=>normalizeActivity({...intervalRow,completions_max:41}),/exceeds participants/);

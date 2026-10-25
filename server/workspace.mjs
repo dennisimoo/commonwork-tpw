@@ -2,7 +2,7 @@ import {demoSource,initialDemoState,validateDemoState} from './demo-state.mjs';
 import {defaultFields,validateFields,customValues,duplicateMatches,requiredCoreValues} from '../public/report-fields.mjs';
 import {randomBytes,randomUUID,scrypt as rawScrypt,timingSafeEqual,createHash} from 'node:crypto';
 import {promisify} from 'node:util';
-import {normalizeActivity,applyRanges,usesRanges,rangeFields} from '../public/impact-core.mjs';
+import {normalizeActivity,normalizeRanges,usesRanges,rangeFields} from '../public/impact-core.mjs';
 import {normalizeSchedule} from '../public/schedule.mjs';
 const scrypt=promisify(rawScrypt),hash=value=>createHash('sha256').update(value).digest('hex'),week=7*24*60*60*1000;
 const fail=(status,message)=>{throw Object.assign(Error(message),{status});};
@@ -96,11 +96,11 @@ export function createWorkspace(db,seed,options={}){
     const orgId=await scopedOrg(user,body.organizationId);if(!orgId)fail(400,'Choose an organization for these reports.');if(!Array.isArray(body.records)||body.records.length<1||body.records.length>30)fail(400,'Save between 1 and 30 program records at a time.');if(!['draft','submit'].includes(body.intent))fail(400,'Choose save draft or submit.');
     const config=await fields();const org=await get('SELECT name FROM organizations WHERE id=?',orgId);
     const incoming=body.records.map((row,index)=>{if(!row||typeof row!=='object')fail(400,`Row ${index+1} is invalid.`);if(clean(row.program).length<1)fail(400,`Row ${index+1}: enter a program name.`);
-     let record;try{row=applyRanges(row);record=normalizeActivity({organization:org.name,program:clean(row.program),facility:clean(row.facility)||'Not yet specified',yard:clean(row.yard,80),status:clean(row.status)||'Planned',start_date:row.start_date||null,end_date:row.end_date||null,program_hours:row.program_hours,participants:row.participants,completions:row.completions,notes:clean(row.notes,3000)});}catch(error){fail(400,`Row ${index+1}: ${error.message}`);}
+     let record;try{row=normalizeRanges(row);record=normalizeActivity({program_hours_max:row.program_hours_max,participants_max:row.participants_max,completions_max:row.completions_max,organization:org.name,program:clean(row.program),facility:clean(row.facility)||'Not yet specified',yard:clean(row.yard,80),status:clean(row.status)||'Planned',start_date:row.start_date||null,end_date:row.end_date||null,program_hours:row.program_hours,participants:row.participants,completions:row.completions,notes:clean(row.notes,3000)});}catch(error){fail(400,`Row ${index+1}: ${error.message}`);}
      if(!['Planned','In Progress','Completed'].includes(record.status))fail(400,`Row ${index+1}: choose a valid schedule status.`);
      if(body.intent==='submit'&&record.status!=='Completed')fail(400,`Row ${index+1}: TPW currently accepts completed cycles only. Keep planned or running courses as drafts.`);
      if(body.intent==='submit'&&(!clean(row.facility)||row.facility==='Not yet specified'||!record.start_date||!record.end_date))fail(400,`Row ${index+1}: facility, start date and end date are required to submit. Save a draft if these are unknown.`);
-     for(const key of rangeFields)record[key+'_range']=row[key+'_range'];record.data_basis=['reported','estimated','unknown'].includes(row.data_basis)?row.data_basis:'reported';if(record.data_basis==='estimated'&&!record.notes&&!usesRanges(record))fail(400,`Row ${index+1}: explain estimated counts in Notes.`);
+     for(const key of rangeFields)record[key+'_max']=row[key+'_max'];record.data_basis=['reported','estimated','unknown'].includes(row.data_basis)?row.data_basis:'reported';if(record.data_basis==='estimated'&&!record.notes&&!usesRanges(record))fail(400,`Row ${index+1}: explain estimated counts in Notes.`);
      try{record.schedule=normalizeSchedule(row.schedule);}catch(error){fail(400,`Row ${index+1}: ${error.message}`);}
      if(body.intent==='submit'&&!seed.facilities.includes(record.facility))fail(400,`Row ${index+1}: choose a facility from TPW’s reference list.`);
      if(body.intent==='submit'&&[record.program_hours,record.participants,record.completions].some(v=>v==null)&&!record.notes)fail(400,`Row ${index+1}: explain unavailable course hours or counts in Notes, or save a draft.`);

@@ -4,7 +4,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { fmt } from "./controls";
+import { fmt, fmtRange } from "./controls";
 export const monthLabel = (month) =>
   new Date(month + "-01T00:00:00Z").toLocaleDateString("en-US", {
     month: "short",
@@ -57,7 +57,17 @@ export default function ReportChart({ months, metric }) {
                 formatter={(value, name, item) => (
                   <div className="flex flex-col gap-1">
                     <span>
-                      {config[metric].label}: <strong>{fmt(value)}</strong>
+                      {config[metric].label}:{" "}
+                      <strong>
+                        {fmtRange(
+                          value,
+                          item.payload[
+                            metric === "participants"
+                              ? "participantsMax"
+                              : "completionsMax"
+                          ],
+                        )}
+                      </strong>
                     </span>
                     <span className="text-muted-foreground">
                       {item.payload.records}{" "}

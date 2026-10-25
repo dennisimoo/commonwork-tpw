@@ -29,7 +29,7 @@ import {
 import { summarizeActivity } from "../../public/impact-core.mjs";
 import { exportActivityRows } from "../../public/report-fields.mjs";
 import { toCSV } from "../../public/core.mjs";
-import { Choice, fmt, Help } from "./controls";
+import { Choice, fmt, fmtRange, fmtRate, Help } from "./controls";
 export function downloadCSV(rows, fields) {
   const blob = new Blob(["\uFEFF" + toCSV(exportActivityRows(rows, fields))], {
       type: "text/csv;charset=utf-8",
@@ -84,7 +84,7 @@ export default function ReportsPage({ state, organization, onOrganization }) {
     total = summarizeActivity(rows);
   const analysis = reportAnalysis(rows, groupBy),
     groups = analysis.groups;
-  const rate = total.rate == null ? "—" : `${fmt(total.rate * 100)}%`;
+  const rate = fmtRate(total);
   return (
     <>
       <div className="page-heading">
@@ -156,27 +156,31 @@ export default function ReportsPage({ state, organization, onOrganization }) {
         items={[
           {
             label: "Participations",
-            value: total.knownParticipants ? fmt(total.participants) : "—",
+            value: total.knownParticipants
+              ? fmtRange(total.participants, total.participantsMax)
+              : "—",
             help: "Course enrollments, not unique people across programs.",
           },
           {
             label: "Completions",
-            value: total.knownCompletions ? fmt(total.completions) : "—",
+            value: total.knownCompletions
+              ? fmtRange(total.completions, total.completionsMax)
+              : "—",
             note:
-              total.rate == null
+              total.rateMin == null
                 ? "No comparable counts"
-                : `${fmt(total.rate * 100)}% on records with both counts`,
+                : `${rate} on records with both counts`,
           },
           {
             label: "Completion rate",
             value: rate,
-            note: `${fmt(total.rateNumerator)} / ${fmt(total.rateDenominator)} matched enrollments`,
+            note: `${total.comparable} reports with both counts`,
             help: "Only courses with both began and completed counts enter this calculation.",
           },
           {
             label: "Participant-hours",
             value: total.knownParticipantHours
-              ? fmt(total.participantHours)
+              ? fmtRange(total.participantHours, total.participantHoursMax)
               : "—",
             help: "Course hours × completions, where both are known. Not observed attendance.",
             note: `${total.knownParticipantHours} courses with both inputs`,
@@ -255,7 +259,7 @@ export default function ReportsPage({ state, organization, onOrganization }) {
             </ToggleGroup>
           </div>
           <CardDescription>
-            Ranked by enrollments. Missing values stay blank.
+            Ranked by enrollments. Estimates show their lowest–highest total.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -282,16 +286,20 @@ export default function ReportsPage({ state, organization, onOrganization }) {
                   <TableCell>{g.name}</TableCell>
                   <TableCell className="text-right">{fmt(g.records)}</TableCell>
                   <TableCell className="text-right">
-                    {g.knownParticipants ? fmt(g.participants) : "—"}
+                    {g.knownParticipants
+                      ? fmtRange(g.participants, g.participantsMax)
+                      : "—"}
                   </TableCell>
                   <TableCell className="text-right">
-                    {g.knownCompletions ? fmt(g.completions) : "—"}
+                    {g.knownCompletions
+                      ? fmtRange(g.completions, g.completionsMax)
+                      : "—"}
                   </TableCell>
+                  <TableCell className="text-right">{fmtRate(g)}</TableCell>
                   <TableCell className="text-right">
-                    {g.rate == null ? "—" : `${fmt(g.rate * 100)}%`}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {g.knownParticipantHours ? fmt(g.participantHours) : "—"}
+                    {g.knownParticipantHours
+                      ? fmtRange(g.participantHours, g.participantHoursMax)
+                      : "—"}
                   </TableCell>
                 </TableRow>
               ))}

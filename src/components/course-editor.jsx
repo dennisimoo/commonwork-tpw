@@ -50,7 +50,7 @@ import {
   Help,
   fmt,
 } from "./controls";
-import { RANGES, applyRanges } from "../../public/impact-core.mjs";
+import { rangeFields, high } from "../../public/impact-core.mjs";
 import { plannedHours } from "../../public/schedule.mjs";
 export default function CourseEditor({
   course,
@@ -67,9 +67,7 @@ export default function CourseEditor({
     [duplicates, setDuplicates] = useState(null),
     [reason, setReason] = useState("");
   const [estimates, setEstimates] = useState(() =>
-    Object.fromEntries(
-      Object.keys(RANGES).map((k) => [k, !!course[k + "_range"]]),
-    ),
+    Object.fromEntries(rangeFields.map((k) => [k, course[k + "_max"] != null])),
   );
   const labels = Object.fromEntries(
     state.fields.fields.map((f) => [f.id, f.label]),
@@ -138,10 +136,15 @@ export default function CourseEditor({
   const mismatch =
     row.participants != null &&
     row.completions != null &&
-    Number(row.completions) > Number(row.participants);
+    Number(row.completions) > Number(high(row, "participants"));
   const plan = plannedHours(row);
   function commit(intent) {
     try {
+      for (const key of rangeFields)
+        if (estimates[key] && (row[key] == null || row[key + "_max"] == null))
+          throw Error(
+            "Enter both ends of the range, or switch back to an exact number.",
+          );
       onSave(row, intent, reason);
       onClose();
     } catch (cause) {
@@ -171,23 +174,39 @@ export default function CourseEditor({
             type="button"
             onClick={() => {
               setEstimates((v) => ({ ...v, [key]: !isRange }));
-              if (isRange) update(key + "_range", null);
+              if (isRange) update(key + "_max", null);
             }}
           >
             {isRange ? "Use a number" : "Estimate"}
           </Button>
         </div>
         {isRange ? (
-          <Choice
-            value={row[key + "_range"] || ""}
-            onChange={(value) => {
-              setRow((r) => applyRanges({ ...r, [key + "_range"]: value }));
-              setError("");
-            }}
-            label={`${labels[key]} estimate`}
-            className="w-full"
-            options={RANGES[key].map((r) => ({ value: r.id, label: r.label }))}
-          />
+          <FieldGroup className="grid grid-cols-2">
+            {[
+              [key, "From"],
+              [key + "_max", "To"],
+            ].map(([name, label]) => (
+              <Field key={name}>
+                <FieldLabel htmlFor={name}>{label}</FieldLabel>
+                <Input
+                  id={name}
+                  aria-label={`${labels[key]} ${label.toLowerCase()}`}
+                  type="number"
+                  min="0"
+                  step={key === "program_hours" ? "0.25" : "1"}
+                  value={row[name] ?? ""}
+                  onChange={(event) =>
+                    update(
+                      name,
+                      event.target.value === ""
+                        ? null
+                        : Number(event.target.value),
+                    )
+                  }
+                />
+              </Field>
+            ))}
+          </FieldGroup>
         ) : (
           <Input
             id={key}
@@ -202,9 +221,9 @@ export default function CourseEditor({
             }
           />
         )}{" "}
-        {isRange && row[key + "_range"] && (
+        {isRange && (
           <FieldDescription>
-            Stored as an estimate: {fmt(row[key])}.
+            Enter your lowest and highest estimate.
           </FieldDescription>
         )}
         {key === "completions" && mismatch && (

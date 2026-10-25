@@ -1,5 +1,5 @@
 import { initialDemo } from "../src/lib/demo-store.mjs";
-import { normalizeActivity } from "../public/impact-core.mjs";
+import { normalizeActivity, normalizeRanges } from "../public/impact-core.mjs";
 import { normalizeSchedule } from "../public/schedule.mjs";
 import {
   defaultFields,
@@ -104,7 +104,9 @@ export function validateDemoState(input, facilities) {
         row.facility !== "Not yet specified"
       )
         throw Error("Choose a reference facility.");
-      const normalized = normalizeActivity({ ...row, organization: org.name });
+      const normalized = normalizeActivity(
+        normalizeRanges({ ...row, organization: org.name }),
+      );
       normalized.schedule = normalizeSchedule(row.schedule);
       const values = row.custom_fields || {};
       if (

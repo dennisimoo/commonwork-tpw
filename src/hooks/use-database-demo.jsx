@@ -1,3 +1,4 @@
+import { normalizeRanges } from "../../public/impact-core.mjs";
 import { useCallback, useEffect, useRef, useState } from "react";
 const legacyKey = "commonwork-react-demo-1";
 export function useDatabaseDemo() {
@@ -72,7 +73,13 @@ export function useDatabaseDemo() {
             ) {
               initial = old;
               initial.records = initial.records.map((row) => {
-                const sample = data.records.find((r) => r.id === row.id);
+                const sample = data.records.find(
+                  (r) =>
+                    r.id === row.id &&
+                    r.program === row.program &&
+                    r.organization === row.organization &&
+                    r.start_date === row.start_date,
+                );
                 return sample?.schedule &&
                   row.origin === "demo" &&
                   !row.schedule
@@ -82,6 +89,22 @@ export function useDatabaseDemo() {
             }
           } catch {}
         }
+        initial = {
+          ...initial,
+          records: initial.records.map(normalizeRanges),
+          published: initial.published.map(normalizeRanges),
+          ...(initial.deletedOrganizations
+            ? {
+                deletedOrganizations: initial.deletedOrganizations.map(
+                  (saved) => ({
+                    ...saved,
+                    records: saved.records.map(normalizeRanges),
+                    published: saved.published.map(normalizeRanges),
+                  }),
+                ),
+              }
+            : {}),
+        };
         latest.current = initial;
         ready.current = true;
         setState(initial);

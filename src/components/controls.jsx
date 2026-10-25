@@ -42,6 +42,18 @@ export const fmt = (value) =>
     : new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(
         value,
       );
+export const fmtRange = (low, high) =>
+  low == null
+    ? "—"
+    : high != null && high !== low
+      ? `${fmt(low)}–${fmt(high)}`
+      : fmt(low);
+export const fmtRate = (summary) =>
+  summary.rateMin == null
+    ? "—"
+    : summary.rateMax != null && summary.rateMin !== summary.rateMax
+      ? `${fmt(summary.rateMin * 100)}–${fmt(summary.rateMax * 100)}%`
+      : `${fmt(summary.rateMin * 100)}%`;
 export const dateLabel = (value) =>
   value ? format(parseISO(value), "MMM d, yyyy") : "No date";
 export function Choice({

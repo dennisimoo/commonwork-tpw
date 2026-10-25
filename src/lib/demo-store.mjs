@@ -1,6 +1,6 @@
 import {
   normalizeActivity,
-  applyRanges,
+  normalizeRanges,
   usesRanges,
 } from "../../public/impact-core.mjs";
 import { normalizeSchedule } from "../../public/schedule.mjs";
@@ -51,7 +51,7 @@ export function copyCourse(row) {
     facility: row.facility,
     yard: row.yard,
     program_hours: row.program_hours,
-    program_hours_range: row.program_hours_range || null,
+    program_hours_max: row.program_hours_max || null,
     schedule: structuredClone(row.schedule),
   };
 }
@@ -63,7 +63,7 @@ export function saveCourse(state, input, intent = "draft", reason = "") {
     throw Error("Choose a course status.");
   if (intent === "submit" && input.status !== "Completed")
     throw Error("Only completed courses can be submitted.");
-  const row = applyRanges({
+  const row = normalizeRanges({
     ...input,
     program: input.program.trim(),
     organization: org.name,
