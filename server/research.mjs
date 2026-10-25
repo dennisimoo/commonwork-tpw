@@ -31,10 +31,10 @@ export async function handleResearch(request,env,fetcher=fetch){
   recent.push(now);recentRequests.set(identity,recent);
   const query=`"${input.fullName.replaceAll('"',' ')}" professional employment career education biography ${input.profile?.href||''}`;
   try{
-    const response=await fetcher('https://api.exa.ai/search',{method:'POST',headers:{'content-type':'application/json','x-api-key':env.EXA_API_KEY},body:JSON.stringify({query,type:'auto',numResults:6,contents:{highlights:true}}),signal:AbortSignal.timeout(25000)});
+    const response=await fetcher('https://api.exa.ai/search',{method:'POST',headers:{'content-type':'application/json','x-api-key':env.EXA_API_KEY},body:JSON.stringify({query,type:'auto',numResults:6}),signal:AbortSignal.timeout(25000)});
     if(!response.ok){const status=response.status;return json({error:status===402?'The configured Exa account has no available credits.':status===401?'Exa rejected the configured API key.':status===429?'Exa is rate limiting requests. Please try again shortly.':'Exa could not complete this search.'},status===401||status===402?503:status===429?429:502);}
     const result=await response.json();
-    const results=(Array.isArray(result.results)?result.results:[]).slice(0,6).filter(r=>httpsURL(r.url)).map(r=>({title:String(r.title||'Untitled source').slice(0,300),url:httpsURL(r.url).href,publishedDate:typeof r.publishedDate==='string'?r.publishedDate:null,highlights:(Array.isArray(r.highlights)?r.highlights:[]).slice(0,3).map(t=>String(t).slice(0,1600))}));
+    const results=(Array.isArray(result.results)?result.results:[]).slice(0,6).filter(r=>httpsURL(r.url)).map(r=>({title:String(r.title||'Untitled source').slice(0,300),url:httpsURL(r.url).href,publishedDate:typeof r.publishedDate==='string'?r.publishedDate:null,highlights:[]}));
     return json({results,retrievedAt:new Date().toISOString(),identityMatch:'unconfirmed'});
   }catch(error){return json({error:error.name==='TimeoutError'||error.name==='AbortError'?'Research timed out. Please try again.':'The research service could not be reached.'},502);}
 }

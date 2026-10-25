@@ -14,7 +14,7 @@ const success=await handleResearch(request(input),{EXA_API_KEY:'test-only'},asyn
 });
 const result=await success.json();assert.equal(result.results.length,1);assert.equal(result.identityMatch,'unconfirmed');
 assert.equal(Object.keys(sent).includes('organization'),false);
-assert.equal(sent.numResults,6);assert.ok(!JSON.stringify(result).includes('test-only'));
+assert.equal(sent.numResults,6);assert.equal(sent.contents,undefined);assert.deepEqual(result.results[0].highlights,[]);assert.ok(!JSON.stringify(result).includes('test-only'));
 const failed=await handleResearch(request(input),{EXA_API_KEY:'test-only'},async()=>new Response('',{status:402}));
 assert.equal(failed.status,503);assert.match((await failed.json()).error,/credits/);
 console.log('PASS: research validation, same-origin boundary, bounded requests, safe source URLs, explicit credit errors and secret-free responses.');
