@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "commonwork-tpw",
+  "main": "worker/index.mjs",
+  "workers_dev": true,
+  "preview_urls": false,
+  "compatibility_date": "2026-10-24",
+  "assets": {"directory": "./public", "binding": "ASSETS", "run_worker_first": true},
+  "d1_databases": [{"binding": "DB", "database_name": "commonwork-tpw", "database_id": "51244fe2-1301-4472-965b-5e6c197cd1d4", "migrations_dir": "migrations"}],
+  "vars": {"OPENAI_MODEL": "gpt-6-luna"},
+  "observability": {"enabled": true}
+}

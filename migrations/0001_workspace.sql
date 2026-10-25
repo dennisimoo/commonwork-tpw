@@ -1,0 +1,10 @@
+PRAGMA foreign_keys=ON;
+ CREATE TABLE IF NOT EXISTS organizations(id TEXT PRIMARY KEY,name TEXT NOT NULL UNIQUE COLLATE NOCASE,created_at TEXT NOT NULL);
+ CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY,username TEXT NOT NULL UNIQUE COLLATE NOCASE,display_name TEXT NOT NULL,password_hash TEXT NOT NULL,role TEXT NOT NULL CHECK(role IN ('admin','member')),organization_id TEXT REFERENCES organizations(id),created_at TEXT NOT NULL,CHECK(role='admin' OR organization_id IS NOT NULL));
+ CREATE UNIQUE INDEX IF NOT EXISTS one_local_admin ON users(role) WHERE role='admin';
+ CREATE TABLE IF NOT EXISTS sessions(token_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),expires INTEGER NOT NULL);
+ CREATE TABLE IF NOT EXISTS invitations(token_hash TEXT PRIMARY KEY,organization_id TEXT NOT NULL REFERENCES organizations(id),created_by TEXT NOT NULL REFERENCES users(id),expires INTEGER NOT NULL,used_at TEXT,revoked INTEGER NOT NULL DEFAULT 0);
+ CREATE TABLE IF NOT EXISTS reports(id TEXT PRIMARY KEY,organization_id TEXT NOT NULL REFERENCES organizations(id),payload TEXT NOT NULL,state TEXT NOT NULL CHECK(state IN ('draft','submitted')),version INTEGER NOT NULL,origin TEXT NOT NULL,updated_at TEXT NOT NULL,updated_by TEXT REFERENCES users(id),published_payload TEXT);
+ CREATE TABLE IF NOT EXISTS audit_events(id INTEGER PRIMARY KEY,actor_id TEXT NOT NULL REFERENCES users(id),report_id TEXT,action TEXT NOT NULL,created_at TEXT NOT NULL);
+ CREATE TABLE IF NOT EXISTS metadata(key TEXT PRIMARY KEY,value TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS mutation_guards(ok INTEGER NOT NULL CHECK(ok=1));

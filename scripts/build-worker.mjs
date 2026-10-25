@@ -1,11 +1,3 @@
-import {readdir,readFile,mkdir,writeFile,rm} from 'node:fs/promises';
-import {resolve,relative,extname} from 'node:path';
-const root=resolve(import.meta.dirname,'..'),assets={};
-const types={'.html':'text/html;charset=utf-8','.css':'text/css;charset=utf-8','.mjs':'text/javascript;charset=utf-8','.js':'text/javascript;charset=utf-8','.json':'application/json;charset=utf-8','.csv':'text/csv;charset=utf-8','.svg':'image/svg+xml','.woff2':'font/woff2'};
-async function walk(dir){for(const entry of await readdir(dir,{withFileTypes:true})){const path=resolve(dir,entry.name);if(entry.isDirectory())await walk(path);else{const route='/'+relative(resolve(root,'public'),path).replaceAll('\\','/');assets[route]=[(await readFile(path)).toString('base64'),types[extname(path)]||'application/octet-stream'];}}}
-await walk(resolve(root,'public'));
-const api=(await readFile(resolve(root,'server/research.mjs'),'utf8')).replaceAll('export function ','function ').replaceAll('export async function ','async function ');
-const worker=`${api}\nconst ASSETS=${JSON.stringify(assets)};\nexport default {async fetch(request,env){const url=new URL(request.url);if(url.pathname.startsWith('/api/research'))return handleResearch(request,env);if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});const entry=ASSETS[url.pathname==='/'?'/index.html':url.pathname];if(!entry)return new Response('Not found',{status:404});return new Response(request.method==='HEAD'?null:Uint8Array.from(atob(entry[0]),c=>c.charCodeAt(0)),{headers:{'content-type':entry[1],'cache-control':url.pathname.startsWith('/assets/')?'public,max-age=86400':'no-cache','x-content-type-options':'nosniff','referrer-policy':'strict-origin-when-cross-origin','content-security-policy':\"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self' https://chatgpt.com https://*.chatgpt.com https://*.openai.com\"}});}};\n`;
-await rm(resolve(root,'dist'),{recursive:true,force:true});await mkdir(resolve(root,'dist/server'),{recursive:true});await mkdir(resolve(root,'dist/.openai'),{recursive:true});
-await writeFile(resolve(root,'dist/server/index.js'),worker);await writeFile(resolve(root,'dist/.openai/hosting.json'),await readFile(resolve(root,'.openai/hosting.json')));
-console.log(`Built Worker with ${Object.keys(assets).length} static assets; credentials are runtime-only.`);
+// Keep the old build command usable; Wrangler owns Worker bundling and static assets.
+import {execFileSync} from 'node:child_process';
+execFileSync(process.execPath,[new URL('../node_modules/wrangler/bin/wrangler.js',import.meta.url).pathname,'deploy','--dry-run','--outdir','dist'],{stdio:'inherit'});

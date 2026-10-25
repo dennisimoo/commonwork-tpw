@@ -17,10 +17,11 @@ export function normalizeActivity(row,index=0){
 }
 export function summarizeActivity(rows){
   const sum=field=>rows.reduce((total,row)=>total+(row[field]??0),0),known=field=>rows.filter(row=>row[field]!==null&&row[field]!==undefined).length;
+  const participantHourRows=rows.filter(row=>row.program_hours!=null&&row.completions!=null);
   const comparable=rows.filter(row=>row.participants!=null&&row.completions!=null);
   const denominator=comparable.reduce((n,row)=>n+row.participants,0),numerator=comparable.reduce((n,row)=>n+row.completions,0);
   const groups=new Map();for(const row of rows){const k=JSON.stringify([row.organization,row.program,row.facility,row.yard,row.start_date,row.end_date]);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(row);}
-  return {records:rows.length,participants:sum('participants'),completions:sum('completions'),hours:sum('program_hours'),knownParticipants:known('participants'),knownCompletions:known('completions'),knownHours:known('program_hours'),rate:denominator?numerator/denominator:null,rateNumerator:numerator,rateDenominator:denominator,comparable:comparable.length,organizations:new Set(rows.map(r=>r.organization)).size,facilities:new Set(rows.map(r=>r.facility)).size,programs:new Set(rows.map(r=>r.program)).size,overlapGroups:[...groups.values()].filter(group=>group.length>1)};
+  return {participantHours:participantHourRows.reduce((sum,row)=>sum+row.program_hours*row.completions,0),knownParticipantHours:participantHourRows.length,records:rows.length,participants:sum('participants'),completions:sum('completions'),hours:sum('program_hours'),knownParticipants:known('participants'),knownCompletions:known('completions'),knownHours:known('program_hours'),rate:denominator?numerator/denominator:null,rateNumerator:numerator,rateDenominator:denominator,comparable:comparable.length,organizations:new Set(rows.map(r=>r.organization)).size,facilities:new Set(rows.map(r=>r.facility)).size,programs:new Set(rows.map(r=>r.program)).size,overlapGroups:[...groups.values()].filter(group=>group.length>1)};
 }
 export function modelImpact({released,baseline,scenario,years,annualCost,programCost}){
   if(![released,baseline,scenario,years,annualCost].every(Number.isFinite)||released<0||!Number.isInteger(released)||baseline<0||baseline>100||scenario<0||scenario>100||years<0||annualCost<0||programCost!==null&&(!Number.isFinite(programCost)||programCost<0))throw Error('Enter valid nonnegative assumptions; rates must be 0–100%.');

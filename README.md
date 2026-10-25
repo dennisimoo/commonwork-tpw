@@ -1,72 +1,75 @@
-# Afterward · TPW Outcomes
+# Commonwork for TPW
 
-A localhost dashboard for TPW and its nonprofit partners. The primary views are Coalition impact and My organization, based on the user-supplied Collective Impact workbook. Public story research and California reference outcomes remain separate tools. No synthetic activity records are introduced.
+Nonprofits record courses, schedules, participant counts and completions. TPW reviews submitted reports by organization or across the coalition.
 
-## Collective impact dashboard
+Live app: https://commonwork-tpw.4dennisk.workers.dev
 
-Open http://localhost:4173/#impact (the old #directory URL also opens this view), or #organization for a partner dashboard. The current data has 36 retained program/facility activity records from Defy Ventures and GRIP Training Institute: 1,441 reported participations, 4,552 known program/course hours and 739 known completions. One explicit SAMPLE DATA row and one Test form response are excluded. Remaining records are partner-supplied, not independently verified.
+Private source: https://github.com/dennisimoo/commonwork-tpw
 
-The completion rate is 739 / 1,261 = 58.6% over 31 records with both counts; missing completions are not treated as zero. Five records have missing counts/hours. Three possible overlapping groups are retained for provider review. There is no participant-level deduplication, attendance inference or session count.
+## Run locally
 
-Use the start-year, organization, facility, program and status filters; drill into the facility tables or source receipts; edit/copy the grant summary; export selected CSV or a print-ready HTML report. The optional scenario is calculated deterministically from editable distinct-release, rate, years and cost assumptions. Reports default to activity only. Whole-course totals are grouped by course start year, not allocated to quarters or represented as annual delivered hours.
-
-The dashboard consumes canonical JSON records or CSV including the workbook's original column headings. Extra fields remain on records and exports. No new survey questions or forms are required. Imports replace tab data and disappear on reload; this prototype's organization selector is not an access control system. There is no production database or live form integration.
-
-Minimum handoff fields: organization, program, facility; optional yard, status, start_date, end_date, program_hours, participants, completions and notes. Count/hour values may be null when unknown. Counts must be nonnegative integers, hours nonnegative numbers, and dates YYYY-MM-DD. Upstream teams should clarify course-hours vs actual delivered-hours before making delivery claims. See docs/partner-inputs/README.md for source details and unavailable references.
-
-To regenerate the supplied workbook snapshot without modifying the original:
+Use Node.js 24 or newer.
 
 ```sh
-python3 scripts/extract-impact.py "/path/to/TPW - Collective Impact Report.xlsx"
-node scripts/check-impact.mjs
+npm ci
+npm start
 ```
 
-## Local development
+Open http://localhost:4173. Select **Explore the real-data demo** to use the supplied workbook without creating an account. Demo edits stay in the tab and reset on reload or exit.
 
-Run `node scripts/dev-server.mjs` and open http://localhost:4173. The impact dashboard works without API keys. For public-story research, copy `.env.example` to `.env`, fill the two keys, and run `node --env-file=.env scripts/dev-server.mjs`. Never commit `.env`. No build step is required for ordinary frontend changes. This repository is private; GitHub publishing stores source only and does not deploy or change the running hosted Site. Keep further work localhost-only unless explicitly requested otherwise.
+To save actual reports, exit demo mode and create the first TPW administrator account. Add a nonprofit, copy its invitation link, and share it with a staff member. Invitations expire after seven days and can be used once. Staff see only their organization's records. Localhost invitations require access to the same server; the deployed Worker provides a shared HTTPS address.
 
-## People and provenance
+Local accounts and reports persist in `.local/workspace.sqlite`, which is excluded from Git. Passwords use salted scrypt hashes; session cookies are HttpOnly and SameSite Strict. HTTPS cookies are Secure. Localhost and D1 use the same asynchronous request handlers.
 
-The home view contains twelve real adults, collected through Exa from The Last Mile's public student stories, individual alumni spotlights, first-person stories on Google.org and CZI, and TPW's public advocacy article. Each row retains its name, affiliation, program/context, source URL, publication date/year and a short paraphrase. Eleven are public alumni stories; Susan Bustamante is explicitly a public advocate, not a program enrollment record. These form a curated public story collection, not a representative participant roster or verified TPW cohort. Dates belong to the source story and do not establish current roles.
+## Reporting
 
-Starting collection: https://thelastmile.org/students/
+- Add a course once; keep its facility, yard, dates and schedule together.
+- Copy a course to another yard or date. The copy clears dates and participant counts.
+- Choose weekly days, time and session length in Calendar. Scheduled hours are a plan, not attendance. Apply the calculated course hours explicitly.
+- Save changed courses as drafts or submit completed courses together (up to 30 changed courses per save, within D1 query and parameter limits).
+- Only submitted, completed courses enter TPW totals. Editing a submitted course preserves its last submission until it is submitted again.
+- Counts, dates, missing values and estimates are checked. Estimates or unavailable counts require a note. Concurrent edits cannot silently overwrite each other.
+- View organization or coalition reports, download CSV, and print a report.
 
-Records: public/data/public-alumni.json. Export people in the app for an Excel-compatible CSV. Provider CSV imports can replace this collection within the browser tab. The People view replaces the former Iowa explorer and separate Participants tab. No Iowa case data is shipped.
+## Actual source data
 
-## Agent flow
+`public/data/collective-impact.json` comes from Dennis's **TPW - Collective Impact Report.xlsx** and the matching Google Sheet. The extraction script preserves sheet/row receipts, source hash, missing values and overlap warnings. Sample/Test rows are excluded. No synthetic participant names or Iowa data are used.
 
-Research -> OpenAI Responses API -> exa_search function -> bounded Exa results with page text -> OpenAI structured milestone report -> source-linked timeline. The agent can run at most two searches and three model turns with an 85-second total deadline. Exa uses its fast search mode. OpenAI model is runtime-configured, matching Kiwi's current model at setup (gpt-6-luna). Requests use store:false. No SDK or CLI execution service is needed in the deployed Worker.
+There are 36 original course records for Defy Ventures and GRIP Training Institute. Three in-progress records remain drafts; 33 completed records enter the initial submitted report. The 31 facility names come from the workbook Constants tab. The original source file is not changed.
 
-Each milestone cites IDs from actual retrieved sources; the server drops unsupported citation IDs and uncited milestones. Dates, identity assessment, self-report limitations, retrieval time, model and executed tool counts remain visible. Identity matching and claims still require review; citation existence is not entailment verification. Public pages are untrusted data. The prompt excludes contacts, offenses, sentence details, health data, inferred income/risk and causal claims. Returned page text is used for synthesis and not sent back to the browser. Keys remain server-only. Research reports can be exported as JSON; sources can be saved for review and exported as CSV. Browser imports and saved research disappear on reload.
+The supplied glossary defines course hours as the hours one participant would receive by attending every session. Calculated participant-hours multiply course hours by completions; they are not observed attendance. Participants are reported participations, not deduplicated people across organizations. Possible overlapping workbook rows are flagged rather than silently removed.
 
-Neither public stories nor absence of web results establish three-year non-return. Research never populates the member outcome statistics automatically.
+Program counts alone cannot establish three-year return-to-prison rates, credit application, causal impact or actual government savings. The optional impact estimate is labeled as a scenario and kept separate from reported activity. Public success-story research is a separate, authenticated feature; it does not supply recidivism results.
 
-## Runtime secrets
+## Cloudflare Worker and D1
 
-Production uses Sites secret OPENAI_API_KEY (retrieved from the user-authorized Kiwi config in AWS Secrets Manager), OPENAI_MODEL, and the existing EXA_API_KEY secret. Kiwi's own configuration is read-only and unchanged. No secrets are stored in source, assets or archives.
-
-Local preview: supply OPENAI_API_KEY and OPENAI_MODEL in the process environment. EXA_API_KEY is read from the environment or the existing active_key in /Users/dennis/exa_keys.json. Then run:
+`worker/index.mjs` handles API requests and serves static files through the ASSETS binding. `DB` is Cloudflare D1. SQL migrations are in `migrations/`; the workbook import is idempotent and never overwrites later edits. No SQLite file is uploaded. Transactions use D1 batches, with database checks for invitation reuse and report-version conflicts.
 
 ```sh
-node scripts/dev-server.mjs
+npm run dev:worker     # local Worker and local D1, port 4175
+npm run check         # source, calculation, auth/report and calendar checks
+npm run check:worker  # complete account/invite/report flow in isolated Worker + D1
+npm run build         # Wrangler dry run
+npm run deploy        # remote D1 migrations, then Worker deployment
 ```
 
-Open http://localhost:4173/#directory. The production Site remains owner-private. The endpoint has a per-isolate throttle for accidental repeats; add durable user quotas before shared use.
-
-## California outcome reports
-
-CA outcomes and Programs use official CDCR reports: 180 statewide measurements and 27 program-category measurements. Member reports accept CSV with flexible mapping, fields, organization filters, release-episode validation, mature three-year cohorts, observation coverage, unknown-outcome bounds and printable reports. Optional documented applied credit days are converted to years / 365.25 and an explicitly illustrative annual-cost assumption. Public stories never enter these calculations. Source PDFs, dates, hashes and limitations are in the data library. Refresh official snapshots using scripts/prepare-data.py and its named CDCR PDFs in source-data/.
-
-## Validate and deploy
+Configure the account through `CLOUDFLARE_ACCOUNT_ID`. The database binding is in `wrangler.jsonc`. The deployed first-admin setup requires a separate `TPW_SETUP_TOKEN` Worker secret; anonymous visitors cannot claim the administrator account. Set it before sharing the deployment:
 
 ```sh
-node --check public/app.mjs
-node --check public/roster.mjs
-node scripts/check.mjs
-node scripts/check-impact.mjs
-node scripts/check-research.mjs
-node scripts/build-worker.mjs
-node scripts/validate-artifact.mjs
+npx wrangler secret put TPW_SETUP_TOKEN
 ```
 
-The Worker embeds public assets plus the server research handler. .openai/hosting.json binds the existing private Site. Credentials are supplied through Sites runtime variables separately from the source artifact. UI assets and Geist fonts are the extracted user-requested mal.gg/yc reference, documented in docs/research/mal-assets.md.
+The administrator enters this setup code once and chooses their own username/password. Afterwards setup is disabled by a database constraint. Optional `OPENAI_API_KEY` and `EXA_API_KEY` Worker secrets enable the separate public-story researcher. Keys never belong in browser code, Git, or Wrangler vars.
+
+### GitHub deployments
+
+`.github/workflows/deploy.yml` checks every push/PR. Successful main-branch checks apply D1 migrations and deploy the Worker. Deployment also supports manual dispatch. Deployments are serialized. PRs never deploy.
+
+Configure the repository:
+
+- Secret `CLOUDFLARE_API_TOKEN`: an API token with Workers Scripts Edit and D1 Edit for the intended account, plus Account Settings Read if needed by Wrangler.
+- Variable `CLOUDFLARE_ACCOUNT_ID`: the intended Cloudflare account ID.
+
+The CI token stays in GitHub Secrets. A local Wrangler OAuth login is not a persistent CI credential. Worker secrets are provisioned separately and retained across deployments. The production environment can have GitHub approval rules added if required.
+
+Account creation, invitations and reporting are implemented. Password reset and outbound email are not implemented in V1. Administrators share invitation links directly. The app has no individual participant records.

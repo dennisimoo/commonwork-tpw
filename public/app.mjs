@@ -1,8 +1,11 @@
+import {api,loadSession,renderAccess,renderOrganizations,renderPrograms as renderProgramWorkspace,resetProgramCaches} from './portal.mjs';
 import {escapeHTML as e, number as n, percent, parseCSV, importFields, analyzeImport, toCSV} from './core.mjs';
 
 const main = document.querySelector('main'), dialog = document.querySelector('dialog');
-const names = {impact:'Coalition impact',organization:'My organization',research:'Public story research',overview:'Overview',programs:'Program outcomes',records:'Public records',coalition:'Coalition reports',sources:'Data library'};
+const names = {organizations:'Organizations',calendar:'Calendar',programs:'Programs',impact:'Coalition impact',organization:'My organization',research:'Public story research',overview:'Overview',achievements:'Program outcomes',records:'Public records',coalition:'Coalition reports',sources:'Data library'};
 const metricNames = {return:'Return to prison',conviction:'Conviction',arrest:'Arrest'};
+let workspaceSession;
+let routeVersion=0;
 let data, selectedCohort='2020-21', metric='return', years=3;
 let importData=null, mapping={}, importedOrganization='all', asOf='2026-10-24', hiddenFields=new Set(), annualCost=21534;
 const source = id => data.sources.find(s=>s.id===id);
@@ -16,7 +19,7 @@ function modal(html){document.querySelector('#dialog-content').innerHTML=html;if
 document.querySelector('.dialog-close').onclick=()=>dialog.close();
 document.querySelector('.skip').onclick=ev=>{ev.preventDefault();main.focus();};
 dialog.addEventListener('click',ev=>{if(ev.target===dialog){const r=dialog.getBoundingClientRect();if(ev.clientX<r.left||ev.clientX>r.right||ev.clientY<r.top||ev.clientY>r.bottom)dialog.close();}});
-document.querySelector('#about-button').onclick=()=>modal(`<div class="eyebrow">Why this workspace exists</div><h2>Evidence for a second chance.</h2><p>TPW advocates for access and funding for community organizations offering programs in California state prisons. Afterward helps providers organize outcomes and communicate evidence.</p><p>The main dashboard uses TPW’s supplied Collective Impact workbook to summarize reported participations, program hours and completions. It excludes explicit sample/test entries and keeps missing information visible. Public story research and California context remain separate reference views.</p><p>Coalition imports are processed in this browser tab only. An OpenAI agent uses Exa to research public professional milestones and returns source-linked reports for review. It does not contact anyone or infer criminal risk.</p><a class="button primary spaced" href="https://www.thetpw.org/" target="_blank" rel="noopener">Visit TPW ↗</a>`);
+document.querySelector('#about-button').onclick=()=>modal(`<div class="eyebrow">COMMONWORK / TPW</div><h2>Program reporting for TPW</h2><p>Nonprofit staff record courses, schedules, participant counts and completions. TPW administrators review submitted reports by organization or across the coalition.</p><p>Save running courses as drafts. Submit them when completed. Copy a course to another yard or date without re-entering its details. Calendar schedules describe planned sessions, not actual attendance.</p><p>The demo uses TPW’s supplied Collective Impact workbook. Sample and test entries are excluded. Missing values and possible overlaps remain visible. Program counts do not establish recidivism rates or government savings.</p><a class="button primary spaced" href="https://www.thetpw.org/" target="_blank" rel="noopener">Visit TPW</a>`);
 
 const heading = (eyebrow,title,description,actions='')=>`<div class="page-heading"><div><div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p>${description}</p></div><div class="heading-actions">${actions}</div></div>`;
 const badge = (text,cls='')=>`<span class="badge ${cls}">${text}</span>`;
@@ -66,9 +69,9 @@ function download(filename,content,type='text/csv;charset=utf-8'){
   const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000);
 }
 
-async function renderActivity(view){
+async function renderActivity(view,isCurrent){
   const {renderImpact}=await import('./impact.mjs');
-  await renderImpact({mount:main,openModal:modal,download,toast,view});
+  await renderImpact({mount:main,openModal:modal,download,toast,view,user:workspaceSession.user,isCurrent});
 }
 
 async function renderPeople(){
@@ -132,13 +135,31 @@ function openReport(type,result){
 }
 
 async function route(){
-  const requested=location.hash.slice(1)||'impact';
-  const view=['directory','records'].includes(requested)?'impact':requested==='participants'?'research':requested;
+  const version=++routeVersion,isCurrent=()=>version===routeVersion;
+  const requested=location.hash.slice(1)||(workspaceSession?.user?.role==='admin'?'organizations':'programs');
+  if(!workspaceSession?.user||requested.startsWith('join/')){await renderAccess({mount:main,session:workspaceSession,isCurrent,onDemo:()=>{resetProgramCaches();sessionStorage.setItem('commonwork-demo','1');workspaceSession.user={role:'demo',display_name:'Workbook demo'};updateAccount();location.hash='#programs';route();},onAuthenticated:async()=>{sessionStorage.removeItem('commonwork-demo');resetProgramCaches();workspaceSession=await loadSession();updateAccount();location.hash=workspaceSession.user.role==='admin'?'#organizations':'#programs';await route();}});return;}
+  let view=['directory','records'].includes(requested)?'impact':requested==='participants'?'research':requested;
+  if(workspaceSession.user.role==='member'&&view==='impact')view='organization';
+  if(workspaceSession.user.role==='member'&&view==='organizations'){location.hash='#programs';return;}
   if(view==='main'){main.focus();return;}
   document.querySelector('#page-name').textContent=names[view]||'Directory';
   document.querySelectorAll('nav a').forEach(a=>{a.classList.toggle('active',a.dataset.view===view);if(a.dataset.view===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-  try{await ({impact:()=>renderActivity('coalition'),organization:()=>renderActivity('organization'),research:renderPeople,overview:renderOverview,programs:renderPrograms,coalition:renderCoalition,sources:renderSources}[view]||(()=>renderActivity('coalition')))();}
-  catch(err){main.innerHTML=`<div class="panel empty"><h2>We couldn’t load this view.</h2><p>${e(err.message)}</p><a class="button" href="#overview">Return to overview</a></div>`;}
+  try{await ({organizations:()=>renderOrganizations({mount:main,openModal:modal,toast,user:workspaceSession.user,isCurrent}),programs:()=>renderProgramWorkspace({mount:main,user:workspaceSession.user,toast,isCurrent}),calendar:()=>renderProgramWorkspace({mount:main,user:workspaceSession.user,toast,view:'calendar',isCurrent}),impact:()=>renderActivity('coalition',isCurrent),organization:()=>renderActivity('organization',isCurrent),research:renderPeople,overview:renderOverview,achievements:renderPrograms,coalition:renderCoalition,sources:renderSources}[view]||(()=>renderActivity('coalition',isCurrent)))();}
+  catch(err){if(!isCurrent())return;main.innerHTML=`<div class="panel empty"><h2>We couldn’t load this view.</h2><p>${e(err.message)}</p><a class="button" href="#overview">Return to overview</a></div>`;}
 }
-try{const response=await fetch('data/california.json');if(!response.ok)throw new Error('The public data snapshot is unavailable.');data=await response.json();window.addEventListener('hashchange',route);await route();}
-catch(err){main.innerHTML=`<div class="panel empty"><h2>Data snapshot unavailable</h2><p>${e(err.message)}</p><button class="button" onclick="location.reload()">Try again</button></div>`;}
+function updateAccount(){
+ const user=workspaceSession?.user;
+ document.querySelectorAll('[data-admin-only]').forEach(link=>link.hidden=!user||!['admin','demo'].includes(user.role));
+ document.querySelectorAll('[data-member-only]').forEach(link=>link.hidden=!user||user.role!=='member');
+ document.querySelector('nav').hidden=!user;
+ document.querySelector('#test-workspace-banner')?.remove();if(workspaceSession?.testWorkspace){const banner=document.createElement('div');banner.id='test-workspace-banner';banner.textContent='Isolated workflow test · disposable accounts and program changes';banner.className='portal-test-banner';document.querySelector('main').before(banner);}
+ const controls=document.querySelector('#account-controls');
+ if(user?.role==='demo'){const banner=document.createElement('div');banner.id='test-workspace-banner';banner.className='portal-demo-banner';banner.textContent='Demo mode · Real TPW workbook data · Your edits reset on reload or exit';document.querySelector('#test-workspace-banner')?.remove();document.querySelector('main').before(banner);}
+ controls.innerHTML=user?`<span>${e(user.display_name)}</span><button id="workspace-logout">${user.role==='demo'?'Exit demo':'Sign out'}</button>`:'<span>TPW program reports</span>';
+ document.querySelector('#workspace-logout')?.addEventListener('click',async()=>{try{sessionStorage.removeItem('commonwork-demo');if(user.role!=='demo')await api('/api/auth/logout',{method:'POST',body:{}});resetProgramCaches();workspaceSession=await loadSession();updateAccount();location.hash='#signin';await route();}catch(error){toast(error.message);}});
+}
+try{
+ workspaceSession=await loadSession();if(sessionStorage.getItem('commonwork-demo')==='1')workspaceSession.user={role:'demo',display_name:'Workbook demo'};updateAccount();
+ const response=await fetch('data/california.json');if(!response.ok)throw new Error('The public data snapshot is unavailable.');data=await response.json();
+ window.addEventListener('hashchange',()=>{if(dialog.open)dialog.close();route();});await route();
+}catch(err){main.innerHTML=`<div class="panel empty"><h2>Workspace unavailable</h2><p>${e(err.message)}</p><button class="button" onclick="location.reload()">Try again</button></div>`;}
