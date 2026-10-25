@@ -888,9 +888,6 @@ body {
   --ring: #9b9ba1;
   --radius: 1rem;
 }
-.app-shell {
-  background: var(--sidebar) !important;
-}
 .app-main[data-slot="sidebar-inset"] {
   border-radius: 30px;
   margin: 6px 6px 6px 0;
@@ -1317,7 +1314,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 .app-shell {
-  background: #fff;
+  background: var(--sidebar);
 }
 .app-main[data-slot="sidebar-inset"] {
   border: 1px solid #ededf0;
