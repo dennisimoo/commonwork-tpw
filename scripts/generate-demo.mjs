@@ -29,6 +29,8 @@ for(const org of organizations){
   records.push(record);
  }
 }
+const demoSchedules=[{days:[1,3],time:'10:00',session_hours:2},{days:[2,4],time:'14:00',session_hours:1.5},{days:[3,5],time:'16:00',session_hours:3},{days:[5],time:'13:00',session_hours:2}];
+let scheduleIndex=0;for(const record of records)if(record.status!=='Completed')record.schedule={frequency:'weekly',...demoSchedules[scheduleIndex++%demoSchedules.length]};
 records.sort((a,b)=>a.start_date.localeCompare(b.start_date)||a.organization.localeCompare(b.organization));
 const source={title:'Synthetic demo data',synthetic:true,generated_by:'scripts/generate-demo.mjs',verification:'Synthetic sample data. Organizations, programs and counts are fictional; facility names come from TPW’s reference list.',excluded:[],hours_definition:'Course hours per participant: hours one person would accumulate by attending every session.',period_definition:'Whole-course totals grouped by start year; no allocation across quarters or calendar years.'};
 await writeFile(new URL('../public/data/demo-programs.json',import.meta.url),JSON.stringify({source,facilities:seed.facilities,records},null,1)+'\n');

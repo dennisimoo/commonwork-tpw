@@ -1,4 +1,5 @@
-import {defaultFields,validateFields,customValues,duplicateMatches} from '../public/report-fields.mjs';
+import {demoSource,initialDemoState,validateDemoState} from './demo-state.mjs';
+import {defaultFields,validateFields,customValues,duplicateMatches,requiredCoreValues} from '../public/report-fields.mjs';
 import {randomBytes,randomUUID,scrypt as rawScrypt,timingSafeEqual,createHash} from 'node:crypto';
 import {promisify} from 'node:util';
 import {normalizeActivity,applyRanges,usesRanges,rangeFields} from '../public/impact-core.mjs';
@@ -37,8 +38,22 @@ export function createWorkspace(db,seed,options={}){
    }
    let body={};if(!['GET','HEAD'].includes(method)){const text=await request.text();if(text.length>1024*1024)fail(413,'Request is too large.');try{body=JSON.parse(text);}catch{fail(400,'The request must be valid JSON.');}if(!body||typeof body!=='object'||Array.isArray(body))fail(400,'Send a JSON object.');}
    if(route==='/api/demo'&&method==='GET'){
-    const demo=options.demo;if(!demo)fail(404,'The demo is not available.');const organizations=[...new Set(demo.records.map(r=>r.organization))].map(name=>({id:'demo-'+name.toLowerCase().replace(/[^a-z0-9]+/g,'-'),name}));
-    return json({...demo,organizations,records:demo.records.map((r,index)=>({...r,id:'demo-'+index,organization_id:organizations.find(o=>o.name===r.organization).id,report_state:r.status==='Completed'?'submitted':'draft',version:1,origin:'demo'}))});
+    if(!options.demo)fail(404,'The demo is not available.');return json(demoSource(options.demo));
+   }
+   if(route==='/api/demo/state'&&['GET','PUT'].includes(method)){
+    if(!options.demo)fail(404,'The demo is not available.');
+    let token=request.headers.get('cookie')?.match(/(?:^|;\s*)commonwork_demo=([a-f0-9]{64})(?:;|$)/)?.[1];
+    let saved=token?await get('SELECT payload,revision FROM demo_workspaces WHERE token_hash=? AND expires>?',hash(token),Date.now()):null;
+    if(method==='GET'){
+     let setCookie;if(!saved){token=randomBytes(32).toString('hex');const state=initialDemoState(options.demo);await run('DELETE FROM demo_workspaces WHERE expires<?',Date.now());await run('INSERT INTO demo_workspaces(token_hash,payload,revision,expires,updated_at) VALUES(?,?,0,?,?)',hash(token),JSON.stringify(state),Date.now()+week,now());saved={payload:JSON.stringify(state),revision:0};setCookie=`commonwork_demo=${token}; Path=/api/demo; HttpOnly; SameSite=Strict; Max-Age=${week/1000}${url.protocol==='https:'?'; Secure':''}`;}
+     return json({state:JSON.parse(saved.payload),revision:saved.revision,storage:options.databaseKind||'database'},200,setCookie?{'set-cookie':setCookie}:{});
+    }
+    if(!saved)fail(401,'Reload to start a database demo.');
+    if(!Number.isInteger(body.revision)||body.revision<0)fail(400,'Include the saved revision.');
+    let state;try{state=validateDemoState(body.state,options.demo.facilities);}catch(error){fail(400,error.message);}
+    const updated=await get('UPDATE demo_workspaces SET payload=?,revision=revision+1,updated_at=? WHERE token_hash=? AND revision=? RETURNING revision',JSON.stringify(state),now(),hash(token),body.revision);
+    if(!updated)fail(409,'This demo changed in another tab. Export your work, then reload the saved version.');
+    return json({revision:updated.revision});
    }
    if(route==='/api/me'&&method==='GET')return json({testWorkspace:!!options.testWorkspace,setupTokenRequired:!!options.requireSetupToken,user:await userFor(request),setupRequired:!await get("SELECT id FROM users WHERE role='admin'")});
    if(route==='/api/auth/setup'&&method==='POST'){
@@ -89,7 +104,7 @@ export function createWorkspace(db,seed,options={}){
      try{record.schedule=normalizeSchedule(row.schedule);}catch(error){fail(400,`Row ${index+1}: ${error.message}`);}
      if(body.intent==='submit'&&!seed.facilities.includes(record.facility))fail(400,`Row ${index+1}: choose a facility from TPW’s reference list.`);
      if(body.intent==='submit'&&[record.program_hours,record.participants,record.completions].some(v=>v==null)&&!record.notes)fail(400,`Row ${index+1}: explain unavailable course hours or counts in Notes, or save a draft.`);
-     try{record.custom_fields=customValues(row,config,body.intent==='submit');}catch(error){fail(400,`Row ${index+1}: ${error.message}`);}
+     try{if(body.intent==='submit')requiredCoreValues(record,config);record.custom_fields=customValues(row,config,body.intent==='submit');}catch(error){fail(400,`Row ${index+1}: ${error.message}`);}
      if(row.id&&typeof row.id!=='string')fail(400,'Invalid report reference.');return {id:row.id||null,version:row.version,record};
     });
     if(new Set(incoming.filter(r=>r.id).map(r=>r.id)).size!==incoming.filter(r=>r.id).length)fail(400,'The same report appears more than once.');

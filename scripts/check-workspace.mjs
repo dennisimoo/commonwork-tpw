@@ -12,6 +12,21 @@ try{
  assert.equal((await call('/api/impact')).status,401);
  const demo=(await call('/api/demo')).body;assert.equal(demo.records.length,demoData.records.length);assert.equal(demo.organizations.length,3);assert.equal(demo.facilities.length,31);assert.ok(demo.source.synthetic,'Demo must use synthetic data.');assert.ok(!demo.records.some(r=>seed.records.some(w=>w.organization===r.organization)),'Demo must not contain real partner organizations.');
  assert.equal((await call('/api/reports/batch',{method:'POST',body:{intent:'draft',records:[]}})).status,401);
+ const databaseA=await call('/api/demo/state'),databaseB=await call('/api/demo/state');
+ assert.equal(databaseA.status,200);assert.ok(databaseA.cookie);assert.notEqual(databaseA.cookie,databaseB.cookie);
+ const demoSnapshot=structuredClone(databaseA.body.state);demoSnapshot.organizations.push({id:'database-fixture-org',name:'Database fixture organization'});demoSnapshot.fields.fields[0].label='Database course title';
+ const saveDemo=()=>call('/api/demo/state',{method:'PUT',cookie:databaseA.cookie,body:{state:demoSnapshot,revision:databaseA.body.revision}});
+ assert.deepEqual((await Promise.all([saveDemo(),saveDemo()])).map(r=>r.status).sort(),[200,409]);
+ const savedDemo=(await call('/api/demo/state',{cookie:databaseA.cookie})).body;
+ assert.equal(savedDemo.revision,1);assert.equal(savedDemo.state.fields.fields[0].label,'Database course title');assert.equal(savedDemo.state.organizations.length,4);
+ assert.equal((await call('/api/demo/state',{cookie:databaseB.cookie})).body.state.organizations.length,3);
+ assert.equal((await call('/api/impact',{cookie:databaseA.cookie})).status,401,'Demo cookies must never access private reports.');
+ assert.equal((await call('/api/demo/state',{method:'PUT',body:{state:demoSnapshot,revision:0}})).status,401);
+ assert.equal((await call('/api/demo/state',{method:'PUT',origin:'https://other.invalid',cookie:databaseA.cookie,body:{state:demoSnapshot,revision:1}})).status,403);
+ const invalidDemo=structuredClone(demoSnapshot);invalidDemo.records[0].organization_id='unknown';
+ assert.equal((await call('/api/demo/state',{method:'PUT',cookie:databaseA.cookie,body:{state:invalidDemo,revision:1}})).status,400);
+ assert.equal((await call('/api/demo/state',{cookie:databaseA.cookie})).body.revision,1);
+ console.log('PASS: database-backed demo state, revision conflicts, cross-session isolation, validation and CSRF boundaries.');
  const admin=await call('/api/auth/setup',{method:'POST',body:{username:'workspace-admin',displayName:'Workflow test admin',password:'fixture-password-for-tests',setupToken:process.env.TEST_SETUP_TOKEN}});
  assert.equal(admin.status,200);assert.ok(admin.cookie);assert.equal(admin.body.user.role,'admin');
  assert.equal((await call('/api/auth/setup',{method:'POST',body:{}})).status,403);
@@ -71,7 +86,7 @@ try{
  assert.equal((await call('/api/fields',{method:'PUT',cookie:admin.cookie,body:config})).status,200);
  const archivedEdit=await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[{...customRow,custom_fields:{}}],intent:'draft'}});assert.equal(archivedEdit.status,200);
  assert.equal(archivedEdit.body.records.find(r=>r.id===customRow.id).custom_fields[customId],3.5,'Removing fields must retain saved values.');
- if(!remote){store.close();store=createWorkspace(path,seed);}
+ if(!remote){store.close();store=createWorkspace(path,seed,{demo:demoData});assert.equal((await call('/api/demo/state',{cookie:databaseA.cookie})).body.state.fields.fields[0].label,'Database course title');}
  const persisted=(await call('/api/fields',{cookie:member.cookie})).body;assert.equal(persisted.fields[0].label,'Course title');assert.equal(persisted.fields.find(f=>f.id===customId).active,false);
  console.log('PASS: field editing, permission boundaries, stale schema rejection, required values, archived value retention, duplicate review and persisted configuration.');
  await call('/api/auth/logout',{method:'POST',cookie:member.cookie,body:{}});assert.equal((await call('/api/impact',{cookie:member.cookie})).status,401);

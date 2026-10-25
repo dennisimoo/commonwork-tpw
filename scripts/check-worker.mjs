@@ -16,6 +16,6 @@ try{
  execFileSync(process.execPath,['scripts/check-workspace.mjs'],{cwd,stdio:'inherit',env:{...process.env,TEST_BASE:base,TEST_SETUP_TOKEN:token}});
  assert.equal((await fetch(base+'/data/collective-impact.json')).status,403);
  assert.equal((await fetch(base+'/api/research/status')).status,401);
- const page=await fetch(base+'/');assert.equal(page.status,200);assert.match(await page.text(),/Commonwork/);
+ const page=await fetch(base+'/');assert.equal(page.status,200);assert.match(await page.text(),/TPW/);
  console.log('PASS: real Worker + local D1 migrations, setup-code protection, account/invite/report flow, scoped data, protected research and assets.');
 }finally{if(server){server.kill('SIGTERM');await new Promise(resolve=>server.once('exit',resolve));}await rm(dir,{recursive:true,force:true});}
