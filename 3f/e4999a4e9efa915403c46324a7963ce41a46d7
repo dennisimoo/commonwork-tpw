@@ -1,0 +1,151 @@
+.gitignore
+  s_e18a058904d990::t_ef798b0164e24b 19-20
+README.md
+  s_e18a058904d990::t_4f71cc0ae923e4 3,18,20,22,24-30,32,34,36,38,40,42,46,49-54,57,59,61,63
+components.json
+  s_e18a058904d990::t_f908ccd692c6c5 1-22
+eslint.config.js
+  s_e18a058904d990::t_cb3fbcda2eae7f 1-17
+index.html
+  s_e18a058904d990::t_8a5516277ba79d 1-14
+jsconfig.json
+  s_e18a058904d990::t_86790cb739433b 1-8
+migrations/0004_demo_workspaces.sql
+  s_e18a058904d990::t_2011a77bc5df4f 1-7
+package-lock.json
+  s_e18a058904d990::t_3239d70ace3eb7 8-26,28-34,165-223,677-946,1522-1565,1594-1603,1633-1637,1639-1642,1645-1648,1650-1651,1653-1665,1668-1671,1673-1696,1699-4872,4876-8020,8022-8028,8030-8201,8203-8220,8222,8224-8226,8229-8235,8237-8240,8243,8246-8250,8253-8259,8261-8268,8270-8274,8277-8283,8285-8294,8296-8316,8318-8322,8325-8331,8333-8344,8346-8352,8354-8365,8367-8370,8373-8375,8377,8380,8383-8386,8388,8390-8394,8397,8400,8403-8406,8409-8423,8425,8428,8431-8434,8436-8448,8450-8453,8456-8464,8466-8469,8472-8475,8478-8479,8561-8573
+package.json
+  s_e18a058904d990::t_4225fdce68007e 10-12,14-17,20-26,31-49
+public/data/demo-programs.json
+  s_e18a058904d990::t_9c95d80711a6a2 808-817,834-842,859-868,885-894
+public/report-fields.mjs
+  s_e18a058904d990::t_53c2f28393ea1e 1-258
+scripts/check-demo.mjs
+  s_e18a058904d990::t_a05d05e0ff9b58 1-300
+scripts/check-worker.mjs
+  s_e18a058904d990::t_2dd4f48414964d 19
+scripts/check-workspace.mjs
+  s_e18a058904d990::t_3c68acc4c23b8f 15-29,89
+scripts/dev-server.mjs
+  s_e18a058904d990::t_b99d2d889c56ef 1-97,100-108
+scripts/generate-demo.mjs
+  s_e18a058904d990::t_1dcc4d465d2cd3 32-33
+server/demo-state.mjs
+  s_e18a058904d990::t_f4883f712e8af1 1-157
+server/local-database.mjs
+  s_e18a058904d990::t_2e373c3b6be8e7 13
+server/workspace.mjs
+  s_e18a058904d990::t_5741181275048f 1-2,41-56,107
+src/App.jsx
+  s_e18a058904d990::t_d404391b909352 1-996
+src/components/calendar-page.jsx
+  s_e18a058904d990::t_72c85c0504fd0f 1-329
+src/components/controls.jsx
+  s_e18a058904d990::t_e11f515156e526 1-227
+src/components/course-editor.jsx
+  s_e18a058904d990::t_1486eecff3b4c0 1-605
+src/components/fields-page.jsx
+  s_e18a058904d990::t_d50a853e43638f 1-454
+src/components/program-groups.jsx
+  s_e18a058904d990::t_7b535f36e98520 1-171
+src/components/report-chart.jsx
+  s_e18a058904d990::t_44aff8cfed4f8f 1-155
+src/components/reports-page.jsx
+  s_e18a058904d990::t_089c4e097834e7 1-398
+src/components/ui/accordion.jsx
+  s_e18a058904d990::t_965013a2524550 1-50
+src/components/ui/alert.jsx
+  s_e18a058904d990::t_d517d6635cd8e5 1-59
+src/components/ui/badge.jsx
+  s_e18a058904d990::t_af076c69ac6f39 1-41
+src/components/ui/button.jsx
+  s_e18a058904d990::t_c94f443b495350 1-60
+src/components/ui/calendar.jsx
+  s_e18a058904d990::t_b9774a9a004ce0 1-207
+src/components/ui/card.jsx
+  s_e18a058904d990::t_3edd8cae6379c3 1-91
+src/components/ui/chart.jsx
+  s_e18a058904d990::t_38a1fb738b296f 1-322
+src/components/ui/collapsible.jsx
+  s_e18a058904d990::t_f1776f35a12c1a 1-21
+src/components/ui/command.jsx
+  s_e18a058904d990::t_e8ca0ef3fbde05 1-154
+src/components/ui/dialog.jsx
+  s_e18a058904d990::t_bf2c2fffacd23a 1-135
+src/components/ui/dropdown-menu.jsx
+  s_e18a058904d990::t_32d2a27241114a 1-199
+src/components/ui/empty.jsx
+  s_e18a058904d990::t_7186e7ae0f16a3 1-99
+src/components/ui/field.jsx
+  s_e18a058904d990::t_d6f16b9a28e444 1-224
+src/components/ui/input-group.jsx
+  s_e18a058904d990::t_a8728b1fed023e 1-155
+src/components/ui/input.jsx
+  s_e18a058904d990::t_70df969848f879 1-20
+src/components/ui/kbd.jsx
+  s_e18a058904d990::t_3c626b4ede3705 1-32
+src/components/ui/label.jsx
+  s_e18a058904d990::t_e0f4663e235c17 1-18
+src/components/ui/popover.jsx
+  s_e18a058904d990::t_01ed494187e035 1-77
+src/components/ui/select.jsx
+  s_e18a058904d990::t_72f01e4c23c3bf 1-160
+src/components/ui/separator.jsx
+  s_e18a058904d990::t_20b8314957affd 1-27
+src/components/ui/sheet.jsx
+  s_e18a058904d990::t_74c2311b7b1b82 1-124
+src/components/ui/sidebar.jsx
+  s_e18a058904d990::t_0b892034022e51 1-657
+src/components/ui/skeleton.jsx
+  s_e18a058904d990::t_f702bd6de27322 1-13
+src/components/ui/sonner.jsx
+  s_e18a058904d990::t_d186db08889838 1-36
+src/components/ui/switch.jsx
+  s_e18a058904d990::t_141d277cfab9c2 1-28
+src/components/ui/table.jsx
+  s_e18a058904d990::t_0491c5edd5d5bd 1-110
+src/components/ui/tabs.jsx
+  s_e18a058904d990::t_f93df31ea13320 1-75
+src/components/ui/textarea.jsx
+  s_e18a058904d990::t_8e495ba94a6e7a 1-17
+src/components/ui/toggle-group.jsx
+  s_e18a058904d990::t_60d1164caecf74 1-68
+src/components/ui/toggle.jsx
+  s_e18a058904d990::t_73221d615ef7c8 1-40
+src/components/ui/tooltip.jsx
+  s_e18a058904d990::t_259c0bb6c1f047 1-44
+src/hooks/use-database-demo.jsx
+  s_e18a058904d990::t_fb3a8e94ccdf81 1-122
+src/hooks/use-mobile.js
+  s_e18a058904d990::t_aa32abe3a9849b 1-19
+src/index.css
+  s_e18a058904d990::t_80eea595bdd7d0 1-2250
+src/lib/demo-store.mjs
+  s_e18a058904d990::t_ad875deb9d6e6c 1-298
+src/lib/report-analysis.mjs
+  s_e18a058904d990::t_07eb07bd7d3a3c 1-37
+src/main.jsx
+  s_e18a058904d990::t_27454016ccc9b9 1-15
+vite.config.js
+  s_e18a058904d990::t_fb8c209bf1031a 1-11
+worker/index.mjs
+  s_e18a058904d990::t_70cadfca313b3e 6
+wrangler.jsonc
+  s_e18a058904d990::t_da92a5510dfa8b 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3fe4999a4e9efa915403c46324a7963ce41a46d7",
+  "prompts": {},
+  "sessions": {
+    "s_e18a058904d990": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a17051-99b9-7121-aae2-53a576dd79a5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "randomperson12344 <4dennisk@gmail.com>"
+    }
+  }
+}
