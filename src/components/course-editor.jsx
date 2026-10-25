@@ -607,10 +607,14 @@ export default function CourseEditor({
                 <Check data-icon="inline-start" />
                 Submit course
               </Button>
+            ) : tab === "counts" ? (
+              <Button onClick={() => commit("draft")}>
+                <Check data-icon="inline-start" />
+                Save course
+              </Button>
             ) : (
               <Button
                 onClick={() => setTab(tab === "course" ? "schedule" : "counts")}
-                disabled={tab === "counts"}
               >
                 Next
                 <ChevronRight data-icon="inline-end" />
