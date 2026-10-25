@@ -1,0 +1,35 @@
+[
+  {
+    "id": "calctra-stories",
+    "title": "California rehabilitation alumni stories",
+    "publisher": "CALCTRA · State of California",
+    "url": "https://www.calctra.ca.gov/success-stories/",
+    "geography": "California",
+    "type": "Public stories · not a cohort dataset",
+    "publication": "Discovered October 24, 2026",
+    "detail": "Official adult alumni stories describe training and published post-release employment milestones. Useful as source material illustrating what a dated, documented milestone looks like.",
+    "limitations": "Stories are selectively published, not a representative release cohort. No alumni identities are imported into this app. Do not calculate recidivism or infer program causation from these stories. Publication does not authorize unrelated personal research."
+  },
+  {
+    "id": "juvenile-recidivism",
+    "title": "California juvenile recidivism reports",
+    "publisher": "CDCR · Office of Research",
+    "url": "https://www.cdcr.ca.gov/research/juvenile-recidivism/",
+    "geography": "California · juvenile system",
+    "type": "Historical aggregate reports · not ingested",
+    "publication": "FY 2013–14 and FY 2014–15 release cohorts listed",
+    "detail": "Separate youth reports measure three-year arrest, conviction, and return to state custody, including juvenile or adult state institutions.",
+    "limitations": "Historical youth cohorts are separate from the adult-prison TPW brief. These reports do not provide a named youth roster or current participant follow-up. No juvenile participant identities are collected in this app."
+  },
+  {
+    "id": "juvenile-population",
+    "title": "California Juvenile Detention Profile Survey",
+    "publisher": "Board of State and Community Corrections",
+    "url": "https://www.bscc.ca.gov/jdps-dashboard/",
+    "geography": "California · county juvenile facilities",
+    "type": "Population data · discovered, not ingested",
+    "publication": "Dashboard through Q2 2026 · updated September 25, 2026",
+    "detail": "Queryable state/county facility population data and trends. Useful for describing juvenile facility scale and demand; raw data can be accessed through the linked official query tool.",
+    "limitations": "Facility populations are not participant outcomes or three-year recidivism. Collection varies by agency, some dashboard values are imputed, and revisions can change historical figures. Not a source of named participant identities."
+  }
+]

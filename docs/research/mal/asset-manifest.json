@@ -1,0 +1,195 @@
+{
+  "assets": [
+    {
+      "source_url": "https://www.mal.gg/yc/figma/briefcase-grey.svg",
+      "local_file": "work/afterward/dist/assets/reference/briefcase-grey.svg",
+      "size_bytes": 1206
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/chevron-down.svg",
+      "local_file": "work/afterward/dist/assets/reference/chevron-down.svg",
+      "size_bytes": 336
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/chevron-left-double.svg",
+      "local_file": "work/afterward/dist/assets/reference/chevron-left-double.svg",
+      "size_bytes": 332
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/chevron-right-double.svg",
+      "local_file": "work/afterward/dist/assets/reference/chevron-right-double.svg",
+      "size_bytes": 333
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/chevron-right.svg",
+      "local_file": "work/afterward/dist/assets/reference/chevron-right.svg",
+      "size_bytes": 325
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/chevron-selector-vertical.svg",
+      "local_file": "work/afterward/dist/assets/reference/chevron-selector-vertical.svg",
+      "size_bytes": 417
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/filter-funnel-02.svg",
+      "local_file": "work/afterward/dist/assets/reference/filter-funnel-02.svg",
+      "size_bytes": 1228
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/grid-01.svg",
+      "local_file": "work/afterward/dist/assets/reference/grid-01.svg",
+      "size_bytes": 2920
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/icon-briefcase.svg",
+      "local_file": "work/afterward/dist/assets/reference/icon-briefcase.svg",
+      "size_bytes": 728
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/icon-building.svg",
+      "local_file": "work/afterward/dist/assets/reference/icon-building.svg",
+      "size_bytes": 736
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/icon-chevron-down.svg",
+      "local_file": "work/afterward/dist/assets/reference/icon-chevron-down.svg",
+      "size_bytes": 337
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/icon-chevron-left.svg",
+      "local_file": "work/afterward/dist/assets/reference/icon-chevron-left.svg",
+      "size_bytes": 304
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/icon-chevron-right.svg",
+      "local_file": "work/afterward/dist/assets/reference/icon-chevron-right.svg",
+      "size_bytes": 304
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/icon-command.svg",
+      "local_file": "work/afterward/dist/assets/reference/icon-command.svg",
+      "size_bytes": 1835
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/icon-x-logo.svg",
+      "local_file": "work/afterward/dist/assets/reference/icon-x-logo.svg",
+      "size_bytes": 348
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/link-03.svg",
+      "local_file": "work/afterward/dist/assets/reference/link-03.svg",
+      "size_bytes": 1285
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/list.svg",
+      "local_file": "work/afterward/dist/assets/reference/list.svg",
+      "size_bytes": 1729
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/marker-pin-01.svg",
+      "local_file": "work/afterward/dist/assets/reference/marker-pin-01.svg",
+      "size_bytes": 770
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/plus.svg",
+      "local_file": "work/afterward/dist/assets/reference/plus.svg",
+      "size_bytes": 338
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/search-md.svg",
+      "local_file": "work/afterward/dist/assets/reference/search-md.svg",
+      "size_bytes": 516
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/switch-vertical-01.svg",
+      "local_file": "work/afterward/dist/assets/reference/switch-vertical-01.svg",
+      "size_bytes": 455
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/user-01.svg",
+      "local_file": "work/afterward/dist/assets/reference/user-01.svg",
+      "size_bytes": 762
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/users-01.svg",
+      "local_file": "work/afterward/dist/assets/reference/users-01.svg",
+      "size_bytes": 954
+    },
+    {
+      "source_url": "https://www.mal.gg/yc/figma/x-close.svg",
+      "local_file": "work/afterward/dist/assets/reference/x-close.svg",
+      "size_bytes": 325
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/chunks/1a89ibd9o8dtv.css",
+      "local_file": "work/afterward/docs/research/mal/1a89ibd9o8dtv.css",
+      "size_bytes": 47792
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/chunks/1u7ghityj6fdn.css",
+      "local_file": "work/afterward/docs/research/mal/1u7ghityj6fdn.css",
+      "size_bytes": 3707
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/chunks/2gtthp8lyw682.css",
+      "local_file": "work/afterward/docs/research/mal/2gtthp8lyw682.css",
+      "size_bytes": 93884
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/media/fef07dbb0973bf53-s.00az9qtie3ho1.woff2",
+      "local_file": "work/afterward/dist/assets/reference/fef07dbb0973bf53-s.00az9qtie3ho1.woff2",
+      "size_bytes": 7252
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/media/8a480f0b521d4e75-s.3j-a226dh71aj.woff2",
+      "local_file": "work/afterward/dist/assets/reference/8a480f0b521d4e75-s.3j-a226dh71aj.woff2",
+      "size_bytes": 14900
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/media/53b9e256198e5412-s.2gwoz23eiro2t.woff2",
+      "local_file": "work/afterward/dist/assets/reference/53b9e256198e5412-s.2gwoz23eiro2t.woff2",
+      "size_bytes": 7968
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/media/7178b3e590c64307-s.0i3h3th1vs4m7.woff2",
+      "local_file": "work/afterward/dist/assets/reference/7178b3e590c64307-s.0i3h3th1vs4m7.woff2",
+      "size_bytes": 16540
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/media/caa3a2e1cccd8315-s.p.0zr6hhvz-h9nw.woff2",
+      "local_file": "work/afterward/dist/assets/reference/caa3a2e1cccd8315-s.p.0zr6hhvz-h9nw.woff2",
+      "size_bytes": 29288
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/media/5ce348bf30bf5439-s.27spqqad3wyeo.woff2",
+      "local_file": "work/afterward/dist/assets/reference/5ce348bf30bf5439-s.27spqqad3wyeo.woff2",
+      "size_bytes": 6204
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/media/4fa387ec64143e14-s.3f4zuumv8svu0.woff2",
+      "local_file": "work/afterward/dist/assets/reference/4fa387ec64143e14-s.3f4zuumv8svu0.woff2",
+      "size_bytes": 12872
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/media/6306c77e7c8268e4-s.34r5yzckw0h2s.woff2",
+      "local_file": "work/afterward/dist/assets/reference/6306c77e7c8268e4-s.34r5yzckw0h2s.woff2",
+      "size_bytes": 5892
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/media/7d817b4c03b0c5f1-s.2jyz_zw3a8jit.woff2",
+      "local_file": "work/afterward/dist/assets/reference/7d817b4c03b0c5f1-s.2jyz_zw3a8jit.woff2",
+      "size_bytes": 7728
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/media/bbc41e54d2fcbd21-s.30bdpjkrtcces.woff2",
+      "local_file": "work/afterward/dist/assets/reference/bbc41e54d2fcbd21-s.30bdpjkrtcces.woff2",
+      "size_bytes": 14712
+    },
+    {
+      "source_url": "https://www.mal.gg/_next/static/immutable/media/797e433ab948586e-s.p.1v5bejj26fx9h.woff2",
+      "local_file": "work/afterward/dist/assets/reference/797e433ab948586e-s.p.1v5bejj26fx9h.woff2",
+      "size_bytes": 23108
+    }
+  ],
+  "omitted": []
+}
