@@ -1,0 +1,19 @@
+import assert from 'node:assert/strict';
+import {handleResearch,researchInput} from '../server/research.mjs';
+assert.throws(()=>researchInput({fullName:'Test Name',approvedProfileUrl:'javascript:alert(1)'}));
+assert.throws(()=>researchInput({fullName:'Test Name',approvedProfileUrl:'https://localhost/'}));
+const request=(body,origin='https://example.com')=>new Request('https://example.com/api/research',{method:'POST',headers:{'content-type':'application/json',origin},body:JSON.stringify(body)});
+const input={fullName:'Test Name',approvedProfileUrl:'https://example.org/profile'};
+assert.equal((await handleResearch(request(input),{})).status,503);
+assert.equal((await handleResearch(request(input,'https://other.example'),{EXA_API_KEY:'test-only'})).status,403);
+let sent;
+const success=await handleResearch(request(input),{EXA_API_KEY:'test-only'},async(url,options)=>{
+  sent=JSON.parse(options.body);assert.equal(url,'https://api.exa.ai/search');
+  return Response.json({results:[{title:'Professional source',url:'https://example.org/profile',highlights:['A sourced excerpt.']},{title:'Unsafe source',url:'javascript:alert(1)'}]});
+});
+const result=await success.json();assert.equal(result.results.length,1);assert.equal(result.identityMatch,'unconfirmed');
+assert.equal(Object.keys(sent).includes('organization'),false);
+assert.equal(sent.numResults,6);assert.ok(!JSON.stringify(result).includes('test-only'));
+const failed=await handleResearch(request(input),{EXA_API_KEY:'test-only'},async()=>new Response('',{status:402}));
+assert.equal(failed.status,503);assert.match((await failed.json()).error,/credits/);
+console.log('PASS: research validation, same-origin boundary, bounded requests, safe source URLs, explicit credit errors and secret-free responses.');

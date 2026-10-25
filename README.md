@@ -1,13 +1,13 @@
 # Afterward · TPW Outcomes V1
 
-A buildless website for exploring real public outcome data and preparing member reports. No synthetic participant data is shipped.
+A lightweight website for exploring real public outcome data and preparing member reports. No synthetic participant data is shipped.
 
 ## Run locally
 
 From this project directory:
 
 ```sh
-python3 -m http.server 4173 --directory dist
+node scripts/dev-server.mjs
 ```
 
 Open http://localhost:4173. Run the meaningful data and import checks with:
@@ -26,13 +26,13 @@ node scripts/check.mjs
 
 ## Data provenance
 
-Retrieved October 24, 2026. Exact source URLs and SHA-256 hashes are in `dist/data/california.json`.
+Retrieved October 24, 2026. Exact source URLs and SHA-256 hashes are in `public/data/california.json`.
 
 1. California Department of Corrections and Rehabilitation, June 2026 statewide report for FY 2020–21 releases, Tables 14–16, printed pages 51–53 (PDF pages 61–63).
 2. CDCR, September 2026 rehabilitation achievements supplement, Table 1, printed/PDF page 3.
 3. Iowa Department of Corrections, Iowa Prison Recidivism Status, https://data.iowa.gov/catalog/dataset/984. Downloaded through the official CSV button. Names, birth dates, and person IDs are blank in the public source. This app retains a smaller field set; age bands are derived from published age, `returned` is a boolean from `is_recid`, and `row` is the 1-based data-row position.
 
-California and Iowa are separate datasets. Iowa records are not TPW participants. Counts of records are not necessarily unique people. No web-enrichment or identity matching is performed.
+California and Iowa are separate datasets. Iowa records are not TPW participants. Counts of records are not necessarily unique people. Public Iowa records are not enriched or identified. Provider-supplied roster names may be researched on demand against approved public professional profiles; results remain unconfirmed candidates.
 
 AWS Open Data Registry was searched for prison/recidivism data. No suitable direct outcomes dataset was found. The Common Crawl registry entry was inspected; anonymous S3 listing returned AccessDenied. Common Crawl is not an outcome registry and is not ingested. No AWS account resources were created. This site is hosted with Sites, not AWS.
 
@@ -59,7 +59,7 @@ Duplicate participant + provider + release-date combinations block reporting. Mu
 
 ## Scope and limits
 
-This is a public-data and browser-local V1, with no application backend, shared database, automated refresh, external agent, facial search, or outreach. Browser uploads are held only in memory and are lost on refresh. No causal program effects are inferred. Optional applied-credit estimates use provider-reported days with evidence references; costs are explicitly labeled scenarios, not verified cash savings. Do not publish a member report without reviewing input documentation and cohort eligibility.
+This is a public-data and browser-local V1 with a small server-side Exa research endpoint. It has no shared participant database, automated refresh, facial search, or outreach. Browser uploads are held only in memory and are lost on refresh. No causal program effects are inferred. Optional applied-credit estimates use provider-reported days with evidence references; costs are explicitly labeled scenarios, not verified cash savings. Do not publish a member report without reviewing input documentation and cohort eligibility.
 
 ## Directory design reference
 
@@ -67,6 +67,23 @@ The primary UI was adapted from the user-supplied mal.gg/yc screenshot and live 
 
 ## Named participant roster and applied credits
 
-The Participants tab accepts authorized CSV rosters with `full_name` and `organization`, plus optional provider ID, program and approved HTTPS profile URL. It has no preloaded identities. Files stay in tab memory; no automated research is connected. Exa search and retrieval returned credit-limit errors during setup. Named participants are not linked to anonymous Iowa records.
+The Participants tab accepts authorized CSV rosters with `full_name` and `organization`, plus optional provider ID, program and approved HTTPS profile URL. It has no preloaded identities. Files stay in tab memory; live Exa research is available through a server-side endpoint. The originally connected Exa tool was credit-limited; a user-supplied key was validated and configured server-side. Local preview reads the active key used by exa-cli; hosted deployment uses a Sites secret. Named participants are not linked to anonymous Iowa records.
 
 Member reports optionally map `credit_days_applied` and `credit_evidence`. Only numeric applied-day totals with a nonempty evidence reference enter the estimate. Formula: days / 365.25; illustrative cost = years x annual cost (editable, default challenge assumption $21,534/year). Awarded credits alone do not enter the estimate. Provider inputs are not independently verified, and multi-provider counts are not deduplicated coalition totals.
+
+## Research server and deployment
+
+Local preview reads EXA_API_KEY from environment, or the existing active_key in /Users/dennis/exa_keys.json. The CLI and local server use that same active selection. No key is included in source, browser assets, reports, or archives. Production uses the secret EXA_API_KEY configured through Sites.
+
+POST /api/research accepts only a name and approved public HTTPS professional profile URL. It requests up to six real Exa sources for professional employment/education context, returns source URLs, highlights, available publication dates and retrieval time, and labels identity matching unconfirmed. It does not search prison status, estimate risk, infer income, or write to outcome metrics. Source candidates can be saved for staff review in tab memory and exported as evidence. No result proves three-year non-return or program causation.
+
+Requests require same-origin JSON, bounded inputs and an approved public profile. The owner-private hosted Site supplies the access boundary. There is a small per-isolate throttle for accidental repeated requests, not a distributed quota system. Do not change Site access to public without adding appropriate endpoint authorization and usage controls.
+
+```sh
+node scripts/check.mjs
+node scripts/check-research.mjs
+node scripts/build-worker.mjs
+node scripts/validate-artifact.mjs
+```
+
+The Worker build embeds public static assets and the research handler in one server module. Runtime secrets are supplied separately. Existing source snapshots stay in public/data/; source PDFs and raw Iowa downloads remain excluded from the repository. Local browser participant uploads never enter the build.

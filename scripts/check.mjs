@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {parseCSV, analyzeImport, toCSV, validDate, escapeHTML} from '../dist/core.mjs';
+import {parseCSV, analyzeImport, toCSV, validDate, escapeHTML} from '../public/core.mjs';
 
 // Isolated parser and date-boundary checks. These fixtures are never site data.
 assert.equal(parseCSV('id,note\r\n1,"two, lines\nwith ""quotes"""').rows[0].note,'two, lines\nwith "quotes"');
@@ -27,16 +27,16 @@ const creditMap={...mapping,credit_days_applied:'credit_days_applied',credit_evi
 assert.equal(analyzeImport([{...base,credit_days_applied:'20',credit_evidence:'provider credit ledger'}],creditMap,'2026-10-24').credits.days,20);
 assert.equal(analyzeImport([{...base,credit_days_applied:'20'}],creditMap,'2026-10-24').credits.days,0,'Missing evidence must not enter the credit estimate.');
 assert.equal(analyzeImport([{...base,credit_days_applied:'-1'}],creditMap,'2026-10-24').errors.length,1);
-const {validateProfileURL}=await import('../dist/roster.mjs');
+const {validateProfileURL}=await import('../public/roster.mjs');
 assert.equal(validateProfileURL('javascript:alert(1)'),null);
 assert.equal(validateProfileURL('https://user:password@example.com/'),null);
 assert.equal(validateProfileURL('http://example.com/'),null);
 assert.equal(validateProfileURL('https://example.com/profile'),'https://example.com/profile');
-const california=JSON.parse(await readFile(new URL('../dist/data/california.json',import.meta.url)));
+const california=JSON.parse(await readFile(new URL('../public/data/california.json',import.meta.url)));
 assert.equal(california.statewide.length,180);assert.equal(california.programs.length,27);
 for(const row of [...california.statewide,...california.programs])assert.ok(Math.abs(row.count/row.denominator*100-row.rate)<.06);
 assert.equal(california.statewide.find(r=>r.cohort==='2020-21'&&r.metric==='return'&&r.years===3).count,6249);
-const iowa=JSON.parse(await readFile(new URL('../dist/data/iowa.json',import.meta.url)));
+const iowa=JSON.parse(await readFile(new URL('../public/data/iowa.json',import.meta.url)));
 assert.equal(iowa.length,31703);
 assert.ok(iowa.every(r=>typeof r.returned==='boolean'&&!('name' in r)&&!('birth_date' in r)));
 console.log('PASS: source counts, published rates, CSV parsing, safe exports, dates, incomplete follow-up, duplicate episodes, and privacy-minimized snapshots.');

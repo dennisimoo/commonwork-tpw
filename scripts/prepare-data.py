@@ -11,7 +11,7 @@ import re
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'dist/data'
+OUT = ROOT / 'public/data'
 OUT.mkdir(parents=True, exist_ok=True)
 STATE_URL = 'https://www.cdcr.ca.gov/research/wp-content/uploads/sites/174/2026/06/Statewide-Recidivism-Report-for-Individuals-Released-in-Fiscal-Year-2020-21.pdf'
 PROGRAM_URL = 'https://www.cdcr.ca.gov/research/wp-content/uploads/sites/174/2026/09/Recidivism-Rates-for-Rehabilitative-Program-Achievements-FY-2020-21.pdf'
