@@ -1,7 +1,6 @@
 """Build public snapshots from downloaded official sources. No generated records.
 
-Prerequisites: pdftotext; the two CDCR PDFs and Iowa public CSV in source-data/.
-Iowa CSV: data.iowa.gov/catalog/dataset/984 > Download > CSV.
+Prerequisites: pdftotext; the two CDCR PDFs in source-data/.
 """
 from pathlib import Path
 import csv
@@ -63,22 +62,6 @@ for metric, heading, end in [('arrest', 'Arrest Rates', 'Conviction Rates'),
                                  years=year, denominator=n, count=count, rate=rate,
                                  table=1, pdf_page=3, source='cdcr-programs'))
 
-# Only retain fields needed to demonstrate outcomes. Do not retain offense,
-# charge identifiers, inferred identities, or person-level risk scores.
-records = []
-iowa_path = ROOT / 'source-data/iowa.csv'
-with iowa_path.open() as f:
-    for index, row in enumerate(csv.DictReader(f), 1):
-        assert row['is_recid'] in ['True', 'False']
-        age = int(row['age']) if row['age'] else None
-        records.append(dict(row=index, cohort=int(row['cohort_fiscal_year']),
-                            report_year=int(row['report_fiscal_year']),
-                            age_group=('Under 25' if age < 25 else '25–34' if age < 35 else '35–44' if age < 45 else '45–54' if age < 55 else '55+') if age is not None else 'Unknown',
-                            sex=row['sex'], release_type=row['exit_sup'],
-                            release_date=row['exit_sup_end_date'],
-                            returned=row['is_recid']=='True', reason=row['new_tech'],
-                            days=int(row['days_to_recid']) if row['days_to_recid'] else None))
-assert len(records) == 31703
 assert next(x for x in rows if x['cohort']=='2020-21' and x['metric']=='return' and x['years']==3)['count'] == 6249
 assert next(x for x in programs if x['program']=='edu' and x['metric']=='return' and x['years']==3)['count'] == 196
 
@@ -91,10 +74,6 @@ sources = [
       geography='California', type='Official aggregate data', publication='September 2026',
       detail='Table 1, printed page 3. Academic education, career technical education, and cognitive behavioral achievements; FY 2020–21 release cohort.',
       limitations='Achievement groups overlap and must not be summed. These are statewide program categories, not TPW member organizations. Comparisons are descriptive and do not establish causation.', sha256=hashes['cdcr-programs']),
- dict(id='iowa', title='Iowa Prison Recidivism Status', publisher='Iowa Department of Corrections', url='https://data.iowa.gov/catalog/dataset/984',
-      geography='Iowa', type='Deidentified case records', publication='January 22, 2026 update',
-      detail=f'{len(records):,} public rows downloaded October 24, 2026. Cohort year is release fiscal year; report fiscal year is three years later. Only selected source fields are retained.',
-      limitations='Iowa outcomes are not TPW outcomes or California benchmarks. Names and person identifiers are masked in the source; rows cannot be deduplicated into unique people. A row reference is a snapshot position, not a participant ID. Return for any reason is Iowa’s definition.', sha256=hashlib.sha256(iowa_path.read_bytes()).hexdigest()),
  dict(id='aws', title='AWS Open Data discovery', publisher='Registry of Open Data on AWS', url='https://registry.opendata.aws/',
       geography='Global', type='Discovery only · not ingested', publication='Checked October 24, 2026',
       detail='Searched the registry for prison and recidivism datasets. No suitable direct outcome dataset was found. Common Crawl was assessed as a possible web-evidence source.',
@@ -104,9 +83,6 @@ if discoveries.exists():
     sources.extend(json.loads(discoveries.read_text()))
 data = dict(retrieved='2026-10-24', statewide=rows, programs=programs, sources=sources)
 (OUT/'california.json').write_text(json.dumps(data, separators=(',', ':')))
-(OUT/'iowa.json').write_text(json.dumps(records, separators=(',', ':')))
 with (OUT/'california.csv').open('w') as f:
     writer=csv.DictWriter(f, fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
-with (OUT/'iowa-selected-fields.csv').open('w') as f:
-    writer=csv.DictWriter(f, fieldnames=list(records[0]));writer.writeheader();writer.writerows(records)
-print(f'Validated {len(rows)} California measurements, {len(programs)} program measurements, {len(records)} Iowa case rows.')
+print(f'Validated {len(rows)} California measurements and {len(programs)} program measurements.')

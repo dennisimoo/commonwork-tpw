@@ -1,7 +1,7 @@
 import {escapeHTML as e, number as n, percent, parseCSV, importFields, analyzeImport, toCSV} from './core.mjs';
 
 const main = document.querySelector('main'), dialog = document.querySelector('dialog');
-const names = {directory:'Directory',participants:'Participants',overview:'Overview',programs:'Program outcomes',records:'Public records',coalition:'Coalition reports',sources:'Data library'};
+const names = {directory:'People',overview:'Overview',programs:'Program outcomes',records:'Public records',coalition:'Coalition reports',sources:'Data library'};
 const metricNames = {return:'Return to prison',conviction:'Conviction',arrest:'Arrest'};
 let data, selectedCohort='2020-21', metric='return', years=3;
 let importData=null, mapping={}, importedOrganization='all', asOf='2026-10-24', hiddenFields=new Set(), annualCost=21534;
@@ -16,7 +16,7 @@ function modal(html){document.querySelector('#dialog-content').innerHTML=html;if
 document.querySelector('.dialog-close').onclick=()=>dialog.close();
 document.querySelector('.skip').onclick=ev=>{ev.preventDefault();main.focus();};
 dialog.addEventListener('click',ev=>{if(ev.target===dialog){const r=dialog.getBoundingClientRect();if(ev.clientX<r.left||ev.clientX>r.right||ev.clientY<r.top||ev.clientY>r.bottom)dialog.close();}});
-document.querySelector('#about-button').onclick=()=>modal(`<div class="eyebrow">Why this workspace exists</div><h2>Evidence for a second chance.</h2><p>TPW advocates for access and funding for community organizations offering programs in California state prisons. Afterward helps providers organize outcomes and communicate evidence.</p><p>This V1 contains real public California aggregates and a separate Iowa case-record explorer. It contains no synthetic participant data and no measured TPW member outcomes.</p><p>Coalition imports are processed in this browser tab only. This version does not search for people online, contact participants, or infer criminal risk.</p><a class="button primary spaced" href="https://www.thetpw.org/" target="_blank" rel="noopener">Visit TPW ↗</a>`);
+document.querySelector('#about-button').onclick=()=>modal(`<div class="eyebrow">Why this workspace exists</div><h2>Evidence for a second chance.</h2><p>TPW advocates for access and funding for community organizations offering programs in California state prisons. Afterward helps providers organize outcomes and communicate evidence.</p><p>This V1 includes a directory of real named alumni from public stories and California reference outcomes. Public story profiles are not verified TPW enrollment or a representative outcome cohort.</p><p>Coalition imports are processed in this browser tab only. An OpenAI agent uses Exa to research public professional milestones and returns source-linked reports for review. It does not contact anyone or infer criminal risk.</p><a class="button primary spaced" href="https://www.thetpw.org/" target="_blank" rel="noopener">Visit TPW ↗</a>`);
 
 const heading = (eyebrow,title,description,actions='')=>`<div class="page-heading"><div><div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p>${description}</p></div><div class="heading-actions">${actions}</div></div>`;
 const badge = (text,cls='')=>`<span class="badge ${cls}">${text}</span>`;
@@ -60,21 +60,15 @@ function renderPrograms(){
   document.querySelector('#program-export').onclick=()=>download('california-program-achievements.csv',toCSV(data.programs));
 }
 function renderSources(){
-  main.innerHTML=`<section>${heading('TRACE EVERY NUMBER','The data behind the story.','Official sources, clear definitions, and a record of what this workspace can—and cannot—establish.')}<div class="source-list">${data.sources.map((s,i)=>`<article class="panel source-card"><div class="source-icon">${['C','C','I','A'][i]||'↗'}</div><div><div class="source-meta" style="margin:0 0 6px"><span>${e(s.publisher)}</span><span>•</span><span>${e(s.geography)}</span></div><h2>${e(s.title)}</h2><p>${e(s.detail)}</p><div class="source-meta"><span>${e(s.publication)}</span><span>${e(s.type)}</span></div><details><summary>Definitions & limitations</summary><p>${e(s.limitations)}</p>${s.sha256?`<code>Original source SHA-256: ${s.sha256}</code>`:''}</details>${i===0?'<a class="text-link" href="data/california.csv" download>Download normalized California data ↓</a>':i===2?'<a class="text-link" href="data/iowa-selected-fields.csv" download>Download selected public fields ↓</a>':''}</div><a class="button small" href="${e(s.url)}" target="_blank" rel="noopener">Original source ↗</a></article>`).join('')}</div><div class="bottom-callout"><div class="callout-art">↗</div><div><h3>What would establish TPW member outcomes?</h3><p>A linked release cohort, reliable return events, observation coverage, and a comparison design for causal claims.</p></div><a class="button" href="#coalition">Open coalition workspace ↗</a></div><div class="wide-note spaced"><strong>Snapshot, not a live feed.</strong> Data was retrieved on October 24, 2026. No participant-level web research runs in this version. Missing information is not treated as a positive outcome.</div></section>`;
+  main.innerHTML=`<section>${heading('TRACE EVERY NUMBER','The data behind the story.','Official sources, clear definitions, and a record of what this workspace can—and cannot—establish.')}<div class="source-list">${data.sources.filter(s=>s.geography!=='Iowa').map((s,i)=>`<article class="panel source-card"><div class="source-icon">${['C','C','I','A'][i]||'↗'}</div><div><div class="source-meta" style="margin:0 0 6px"><span>${e(s.publisher)}</span><span>•</span><span>${e(s.geography)}</span></div><h2>${e(s.title)}</h2><p>${e(s.detail)}</p><div class="source-meta"><span>${e(s.publication)}</span><span>${e(s.type)}</span></div><details><summary>Definitions & limitations</summary><p>${e(s.limitations)}</p>${s.sha256?`<code>Original source SHA-256: ${s.sha256}</code>`:''}</details>${i===0?'<a class="text-link" href="data/california.csv" download>Download normalized California data ↓</a>':''}</div><a class="button small" href="${e(s.url)}" target="_blank" rel="noopener">Original source ↗</a></article>`).join('')}</div><div class="bottom-callout"><div class="callout-art">↗</div><div><h3>What would establish TPW member outcomes?</h3><p>A linked release cohort, reliable return events, observation coverage, and a comparison design for causal claims.</p></div><a class="button" href="#coalition">Open coalition workspace ↗</a></div><div class="wide-note spaced"><strong>Snapshot, not a live feed.</strong> Data was retrieved on October 24, 2026. The People directory runs live, source-linked research separately from these aggregate statistics. Missing information is not treated as a positive outcome.</div></section>`;
 }
 function download(filename,content,type='text/csv;charset=utf-8'){
   const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000);
 }
 
-async function renderRecords(){
-  const {renderDirectory}=await import('./directory.mjs');
-  if(!['','#directory','#records'].includes(location.hash))return;
-  await renderDirectory({mount:main,openModal:modal,download});
-}
-
-async function renderParticipants(){
+async function renderPeople(){
   const {renderRoster}=await import('./roster.mjs');
-  if(location.hash!=='#participants')return;
+  if(!['','#directory','#participants','#records'].includes(location.hash))return;
   await renderRoster({mount:main,openModal:modal,download});
 }
 
@@ -134,11 +128,11 @@ function openReport(type,result){
 
 async function route(){
   const requested=location.hash.slice(1)||'directory';
-  const view=requested==='records'?'directory':requested;
+  const view=['records','participants'].includes(requested)?'directory':requested;
   if(view==='main'){main.focus();return;}
   document.querySelector('#page-name').textContent=names[view]||'Directory';
   document.querySelectorAll('nav a').forEach(a=>{a.classList.toggle('active',a.dataset.view===view);if(a.dataset.view===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-  try{await ({directory:renderRecords,participants:renderParticipants,overview:renderOverview,programs:renderPrograms,coalition:renderCoalition,sources:renderSources}[view]||renderRecords)();}
+  try{await ({directory:renderPeople,overview:renderOverview,programs:renderPrograms,coalition:renderCoalition,sources:renderSources}[view]||renderPeople)();}
   catch(err){main.innerHTML=`<div class="panel empty"><h2>We couldn’t load this view.</h2><p>${e(err.message)}</p><a class="button" href="#overview">Return to overview</a></div>`;}
 }
 try{const response=await fetch('data/california.json');if(!response.ok)throw new Error('The public data snapshot is unavailable.');data=await response.json();window.addEventListener('hashchange',route);await route();}

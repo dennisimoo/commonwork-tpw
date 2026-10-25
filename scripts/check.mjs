@@ -36,7 +36,6 @@ const california=JSON.parse(await readFile(new URL('../public/data/california.js
 assert.equal(california.statewide.length,180);assert.equal(california.programs.length,27);
 for(const row of [...california.statewide,...california.programs])assert.ok(Math.abs(row.count/row.denominator*100-row.rate)<.06);
 assert.equal(california.statewide.find(r=>r.cohort==='2020-21'&&r.metric==='return'&&r.years===3).count,6249);
-const iowa=JSON.parse(await readFile(new URL('../public/data/iowa.json',import.meta.url)));
-assert.equal(iowa.length,31703);
-assert.ok(iowa.every(r=>typeof r.returned==='boolean'&&!('name' in r)&&!('birth_date' in r)));
-console.log('PASS: source counts, published rates, CSV parsing, safe exports, dates, incomplete follow-up, duplicate episodes, and privacy-minimized snapshots.');
+const alumni=JSON.parse(await readFile(new URL('../public/data/public-alumni.json',import.meta.url)));
+assert.equal(alumni.length,12);assert.ok(alumni.every(row=>row.full_name&&row.story_url.startsWith('https://')));
+console.log('PASS: California source counts, public alumni provenance, CSV parsing, safe exports and outcome calculations.');
