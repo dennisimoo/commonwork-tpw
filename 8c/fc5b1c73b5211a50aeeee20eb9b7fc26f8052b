@@ -1,0 +1,67 @@
+.github/workflows/deploy.yml
+  s_e18a058904d990::t_1aaaf6af6e94e5 1-43
+.gitignore
+  s_e18a058904d990::t_7ca0c5653a7ff0 9-18
+README.md
+  s_e18a058904d990::t_1df5290ea79a92 1,3,5,7,9,11,14-15,18,20,22,24,26-32,34,36,38,40,42,44,46,48-56,59,62,64,66,68,70-73,75
+docs/partner-inputs/README.md
+  s_e18a058904d990::t_95708156ebb031 5-12
+migrations/0001_workspace.sql
+  s_e18a058904d990::t_a3be980b1d71c5 1-10
+migrations/0002_workbook.sql
+  s_e18a058904d990::t_92c0ef8ed89fb5 1-40
+migrations/0003_auth_attempts.sql
+  s_e18a058904d990::t_92baeaf4a87a39 1
+package-lock.json
+  s_e18a058904d990::t_eb7fd382fe161e 1-1593
+package.json
+  s_e18a058904d990::t_b8169f6c01d249 1-22
+public/app.mjs
+  s_e18a058904d990::t_609704713cd622 1,5,7-8,22,72,74,138-143,147-165
+public/impact-core.mjs
+  s_e18a058904d990::t_88ad58757e5c3c 20,24
+public/impact.mjs
+  s_e18a058904d990::t_c97ae1d8515886 1,9-11,13,26,30-35,39,43,55-56,59
+public/index.html
+  s_e18a058904d990::t_9dea0c6650ff0b 5-6,8,13-15
+public/portal.css
+  s_e18a058904d990::t_d12c8daefb630f 1-4
+public/portal.mjs
+  s_e18a058904d990::t_756fb12356e241 1-80
+public/schedule.mjs
+  s_e18a058904d990::t_48d79d0d39b1f9 1-35
+scripts/build-worker.mjs
+  s_e18a058904d990::t_6b7ebcd2e39f00 1-3
+scripts/check-schedule.mjs
+  s_e18a058904d990::t_0baadbc67ff9f4 1-9
+scripts/check-worker.mjs
+  s_e18a058904d990::t_8ee1d14b758c66 1-21
+scripts/check-workspace.mjs
+  s_e18a058904d990::t_4d58fe3ac70f58 1-54
+scripts/dev-server.mjs
+  s_e18a058904d990::t_0aa140694fdec8 5-8,11-27,29-30
+server/local-database.mjs
+  s_e18a058904d990::t_d3666c747d47e3 1-14
+server/workspace.mjs
+  s_e18a058904d990::t_fad0353e8da77b 1-101
+worker/index.mjs
+  s_e18a058904d990::t_fd32eb68cca85e 1-22
+wrangler.jsonc
+  s_e18a058904d990::t_484ea6f5815008 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8cfc5b1c73b5211a50aeeee20eb9b7fc26f8052b",
+  "prompts": {},
+  "sessions": {
+    "s_e18a058904d990": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a17051-99b9-7121-aae2-53a576dd79a5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "randomperson12344 <4dennisk@gmail.com>"
+    }
+  }
+}
