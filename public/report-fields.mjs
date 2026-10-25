@@ -19,7 +19,7 @@ export function validateFields(input,previous){
 export function customValues(row,config,submit=false){
  const values=row.custom_fields??{};if(!values||typeof values!=='object'||Array.isArray(values))throw Error('Invalid additional fields.');
  const result={};for(const f of config.fields.filter(f=>f.type!=='core'&&f.active)){
-  const value=values[f.id];if(value===null||value===undefined||value===''){if(submit&&f.active&&f.required)throw Error(`${f.label} is required.`);continue;}
+  const value=typeof values[f.id]==='string'?values[f.id].trim():values[f.id];if(value===null||value===undefined||value===''){if(submit&&f.active&&f.required)throw Error(`${f.label} is required.`);continue;}
   if(f.type==='number'){if(typeof value!=='number'||!Number.isFinite(value)||value<0)throw Error(`${f.label} needs a non-negative number.`);}
   else if(typeof value!=='string'||value.length>2000||(f.type==='date'&&!validDate(value)))throw Error(`${f.label} needs a valid ${f.type==='date'?'date':'text value (up to 2,000 characters)'}.`);
   result[f.id]=value;
@@ -27,7 +27,7 @@ export function customValues(row,config,submit=false){
 }
 const normalized=value=>String(value??'').trim().replace(/\s+/g,' ').toLowerCase();
 export function duplicateMatches(incoming,existing){
- const key=r=>r.start_date&&r.end_date?[r.program,r.facility,r.yard,r.start_date,r.end_date].map(normalized).join('|'):null;
+ const key=r=>r.start_date&&r.end_date?[r.program,r.facility,r.yard,r.start_date,r.end_date].map(normalized).map(v=>JSON.stringify(v)).join('|'):null;
  const combined=[...existing.filter(r=>!incoming.includes(r)&&!incoming.some(i=>i.id&&i.id===r.id)),...incoming];
  return incoming.flatMap((r,index)=>{const k=key(r);const matches=k?combined.filter(other=>other!==r&&key(other)===k):[];return matches.length?[{index,program:r.program,facility:r.facility,yard:r.yard||'',start_date:r.start_date,end_date:r.end_date,matches:matches.length}]:[];});
 }

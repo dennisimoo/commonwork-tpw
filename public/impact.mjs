@@ -9,6 +9,7 @@ let includeModel=false;
 const money=value=>'$'+n(Math.round(value)),fmt=value=>value===null||value===undefined?'Not reported':n(value),fraction=value=>value===null?'—':(value*100).toFixed(1)+'%';
 export async function renderImpact({mount,openModal,download,toast,view='coalition',user,isCurrent=()=>true}){
  const token=++revision;{if(user?.role==='demo')dataset=await demoImpact();else{const response=await fetch('/api/impact');if(!response.ok)throw Error('The saved program reports could not be loaded.');dataset=await response.json();}}
+ const config=await getFields(user);
  if(!isCurrent()||token!==revision||!['','#impact','#organization','#directory'].includes(location.hash))return;
  const state=filters[view];
  if(user?.role==='member')state.organization=user.organization||dataset.records[0]?.organization||'';
@@ -47,7 +48,7 @@ export async function renderImpact({mount,openModal,download,toast,view='coaliti
  root.addEventListener('click',async event=>{
   const button=event.target.closest('button');if(!button)return;
   if(button.dataset.drill){state[button.dataset.drill]=button.dataset.value;render();return;}
-  if(button.dataset.record!==undefined){const r=rows[Number(button.dataset.record)];openModal(`<div class="impact"><span class="impact-eyebrow">SOURCE RECEIPT</span><h2>${e(r.program)}</h2><p>${e(r.organization)} · ${e(r.facility)}</p><dl>${Object.entries(r).map(([k,v])=>`<dt>${e(k.replaceAll('_',' '))}</dt><dd>${e(v??'Not reported')}</dd>`).join('')}</dl><p>${e(dataset.source.hours_definition||'Reported program/course hours; verify the upstream definition.')}</p>${r.source_row?`<p>${e(r.source_sheet)}!A${r.source_row}:M${r.source_row} · H = program hours, I = participants, J = completions. Spreadsheet-derived K is not used as program hours.</p>`:''}</div>`);return;}
+  if(button.dataset.record!==undefined){const r=rows[Number(button.dataset.record)];openModal(`<div class="impact"><span class="impact-eyebrow">SOURCE RECEIPT</span><h2>${e(r.program)}</h2><p>${e(r.organization)} · ${e(r.facility)}</p><dl>${[...Object.entries(r).filter(([k])=>k!=='custom_fields'),...config.fields.filter(f=>f.type!=='core'&&r.custom_fields?.[f.id]!=null).map(f=>[f.label+(f.active?'':' (removed field)'),r.custom_fields[f.id]])].map(([k,v])=>`<dt>${e(k.replaceAll('_',' '))}</dt><dd>${e(v??'Not reported')}</dd>`).join('')}</dl><p>${e(dataset.source.hours_definition||'Reported program/course hours; verify the upstream definition.')}</p>${r.source_row?`<p>${e(r.source_sheet)}!A${r.source_row}:M${r.source_row} · H = program hours, I = participants, J = completions. Spreadsheet-derived K is not used as program hours.</p>`:''}</div>`);return;}
   const action=button.dataset.action;
   if(action==='reset'){Object.assign(state,{year:'',organization:view==='organization'?all[0]?.organization||'':'',facility:'',program:'',status:''});render();}
   if(action==='assumptions'){const panel=root.querySelector('.impact-assumptions');panel.hidden=!panel.hidden;button.setAttribute('aria-expanded',String(!panel.hidden));}

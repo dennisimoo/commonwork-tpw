@@ -4,6 +4,8 @@ import {toCSV} from '../public/core.mjs';
 const config=defaultFields(),id='custom_12345678-1234-1234-1234-123456789abc';
 config.fields.push({id,label:'Staff hours',type:'number',active:true,required:true});
 assert.throws(()=>customValues({},config,true),/required/);
+const textConfig={fields:[{id,type:'text',label:'Required note',required:true,active:true}]};
+assert.throws(()=>customValues({custom_fields:{[id]:'   '}},textConfig,true),/required/);
 assert.throws(()=>customValues({custom_fields:{[id]:-1}},config),/non-negative/);
 assert.throws(()=>validateFields(config.fields.slice(1),config),/archiving/);
 assert.throws(()=>validateFields(config.fields.map(f=>f.id===id?{...f,type:'text'}:f),config),/new field/);
