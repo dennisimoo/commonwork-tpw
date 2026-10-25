@@ -4,8 +4,8 @@ import {resolve,sep,extname} from 'node:path';
 import {handleResearch} from '../server/research.mjs';
 import {createLocalWorkspace as createWorkspace} from '../server/local-database.mjs';
 const project=resolve(import.meta.dirname,'..'),root=resolve(project,'public'),port=Number(process.env.PORT||4173);
-const seed=JSON.parse(await readFile(resolve(root,'data/collective-impact.json'),'utf8'));
-const workspace=createWorkspace(process.env.WORKSPACE_DB||resolve(project,'.local/workspace.sqlite'),seed,{testWorkspace:process.env.WORKSPACE_TEST_MODE==='1'});
+const seed=JSON.parse(await readFile(resolve(root,'data/collective-impact.json'),'utf8')),demo=JSON.parse(await readFile(resolve(root,'data/demo-programs.json'),'utf8'));
+const workspace=createWorkspace(process.env.WORKSPACE_DB||resolve(project,'.local/workspace.sqlite'),seed,{demo,testWorkspace:process.env.WORKSPACE_TEST_MODE==='1'});
 const types={'.html':'text/html;charset=utf-8','.css':'text/css;charset=utf-8','.mjs':'text/javascript;charset=utf-8','.json':'application/json;charset=utf-8','.csv':'text/csv;charset=utf-8','.svg':'image/svg+xml','.woff2':'font/woff2'};
 const server=createServer(async(req,res)=>{
  try{

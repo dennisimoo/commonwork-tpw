@@ -15,7 +15,7 @@ npm ci
 npm start
 ```
 
-Open http://localhost:4173. Select **Explore the real-data demo** to use the supplied workbook without creating an account. Demo edits stay in the tab and reset on reload or exit.
+Open http://localhost:4173. Select **Explore the demo** to try the app without creating an account. The demo uses synthetic data (`public/data/demo-programs.json`, from `node scripts/generate-demo.mjs`): three fictional organizations and 48 courses at real CDCR facility names, including estimates, a range and missing counts. It contains no partner data. Demo edits stay in the tab and reset on reload or exit.
 
 To save actual reports, exit demo mode and create the first TPW administrator account. Add a nonprofit, copy its invitation link, and share it with a staff member. Invitations expire after seven days and can be used once. Staff see only their organization's records. Localhost invitations require access to the same server; the deployed Worker provides a shared HTTPS address.
 

@@ -155,7 +155,7 @@ function updateAccount(){
  document.querySelector('nav').hidden=!user;
  document.querySelector('#test-workspace-banner')?.remove();if(workspaceSession?.testWorkspace){const banner=document.createElement('div');banner.id='test-workspace-banner';banner.textContent='Isolated workflow test · disposable accounts and program changes';banner.className='portal-test-banner';document.querySelector('main').before(banner);}
  const controls=document.querySelector('#account-controls');
- if(user?.role==='demo'){const banner=document.createElement('div');banner.id='test-workspace-banner';banner.className='portal-demo-banner';banner.textContent='Demo mode · Real TPW workbook data · Your edits reset on reload or exit';document.querySelector('#test-workspace-banner')?.remove();document.querySelector('main').before(banner);}
+ if(user?.role==='demo'){const banner=document.createElement('div');banner.id='test-workspace-banner';banner.className='portal-demo-banner';banner.textContent='Demo mode · Synthetic sample data, fictional organizations · Your edits reset on reload or exit';document.querySelector('#test-workspace-banner')?.remove();document.querySelector('main').before(banner);}
  controls.innerHTML=user?`<span>${e(user.display_name)}</span><button id="workspace-logout">${user.role==='demo'?'Exit demo':'Sign out'}</button>`:'<span>TPW program reports</span>';
  document.querySelector('#workspace-logout')?.addEventListener('click',async()=>{try{sessionStorage.removeItem('commonwork-demo');if(user.role!=='demo')await api('/api/auth/logout',{method:'POST',body:{}});resetProgramCaches();workspaceSession=await loadSession();updateAccount();location.hash='#signin';await route();}catch(error){toast(error.message);}});
 }

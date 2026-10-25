@@ -1,8 +1,9 @@
 import {createWorkspace} from '../server/workspace.mjs';
 import {handleResearch} from '../server/research.mjs';
 import seed from '../public/data/collective-impact.json';
+import demo from '../public/data/demo-programs.json';
 const handlers=new WeakMap();
-function workspace(env){let value=handlers.get(env.DB);if(!value){value=createWorkspace(env.DB,seed,{requireSetupToken:true,setupToken:env.TPW_SETUP_TOKEN,testWorkspace:env.TEST_WORKSPACE==='1'});handlers.set(env.DB,value);}return value;}
+function workspace(env){let value=handlers.get(env.DB);if(!value){value=createWorkspace(env.DB,seed,{demo,requireSetupToken:true,setupToken:env.TPW_SETUP_TOKEN,testWorkspace:env.TEST_WORKSPACE==='1'});handlers.set(env.DB,value);}return value;}
 export default {
  async fetch(request,env){
   const url=new URL(request.url);let response;

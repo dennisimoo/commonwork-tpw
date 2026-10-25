@@ -37,8 +37,8 @@ export function createWorkspace(db,seed,options={}){
    }
    let body={};if(!['GET','HEAD'].includes(method)){const text=await request.text();if(text.length>1024*1024)fail(413,'Request is too large.');try{body=JSON.parse(text);}catch{fail(400,'The request must be valid JSON.');}if(!body||typeof body!=='object'||Array.isArray(body))fail(400,'Send a JSON object.');}
    if(route==='/api/demo'&&method==='GET'){
-    const names=[...new Set(seed.records.map(r=>r.organization))];const organizations=await Promise.all(names.map(async name=>await get('SELECT id,name FROM organizations WHERE name=? COLLATE NOCASE',name)));
-    return json({...seed,organizations,records:seed.records.map((r,index)=>({...r,id:'workbook-'+index,organization_id:organizations.find(o=>o.name===r.organization).id,report_state:r.status==='Completed'?'submitted':'draft',version:1,origin:'workbook'}))});
+    const demo=options.demo;if(!demo)fail(404,'The demo is not available.');const organizations=[...new Set(demo.records.map(r=>r.organization))].map(name=>({id:'demo-'+name.toLowerCase().replace(/[^a-z0-9]+/g,'-'),name}));
+    return json({...demo,organizations,records:demo.records.map((r,index)=>({...r,id:'demo-'+index,organization_id:organizations.find(o=>o.name===r.organization).id,report_state:r.status==='Completed'?'submitted':'draft',version:1,origin:'demo'}))});
    }
    if(route==='/api/me'&&method==='GET')return json({testWorkspace:!!options.testWorkspace,setupTokenRequired:!!options.requireSetupToken,user:await userFor(request),setupRequired:!await get("SELECT id FROM users WHERE role='admin'")});
    if(route==='/api/auth/setup'&&method==='POST'){

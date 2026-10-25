@@ -4,13 +4,13 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createLocalWorkspace as createWorkspace} from '../server/local-database.mjs';
 const dir=await mkdtemp(join(tmpdir(),'afterward-workspace-test-')),path=join(dir,'test.sqlite');
-const seed=JSON.parse(await readFile(new URL('../public/data/collective-impact.json',import.meta.url)));
-const remote=process.env.TEST_BASE;let store=remote?null:createWorkspace(path,seed);const base=remote||'http://localhost:4173';
+const seed=JSON.parse(await readFile(new URL('../public/data/collective-impact.json',import.meta.url))),demoData=JSON.parse(await readFile(new URL('../public/data/demo-programs.json',import.meta.url)));
+const remote=process.env.TEST_BASE;let store=remote?null:createWorkspace(path,seed,{demo:demoData});const base=remote||'http://localhost:4173';
 const call=async(route,{method='GET',body,cookie,origin=base}={})=>{const send=remote?fetch:request=>store.handle(request);const response=await send(new Request(base+route,{method,headers:{origin,...(body?{'content-type':'application/json'}:{}),...(cookie?{cookie}:{})},...(body?{body:JSON.stringify(body)}:{})}));return {status:response.status,body:await response.json(),cookie:response.headers.get('set-cookie')?.split(';')[0]};};
 try{
  assert.equal((await call('/api/me')).body.setupRequired,true);
  assert.equal((await call('/api/impact')).status,401);
- const demo=(await call('/api/demo')).body;assert.equal(demo.records.length,36);assert.equal(demo.organizations.length,2);assert.equal(demo.facilities.length,31);
+ const demo=(await call('/api/demo')).body;assert.equal(demo.records.length,demoData.records.length);assert.equal(demo.organizations.length,3);assert.equal(demo.facilities.length,31);assert.ok(demo.source.synthetic,'Demo must use synthetic data.');assert.ok(!demo.records.some(r=>seed.records.some(w=>w.organization===r.organization)),'Demo must not contain real partner organizations.');
  assert.equal((await call('/api/reports/batch',{method:'POST',body:{intent:'draft',records:[]}})).status,401);
  const admin=await call('/api/auth/setup',{method:'POST',body:{username:'workspace-admin',displayName:'Workflow test admin',password:'fixture-password-for-tests',setupToken:process.env.TEST_SETUP_TOKEN}});
  assert.equal(admin.status,200);assert.ok(admin.cookie);assert.equal(admin.body.user.role,'admin');
@@ -48,7 +48,7 @@ try{
  assert.equal((await call('/api/organizations',{method:'POST',cookie:admin.cookie,origin:'https://evil.example',body:{name:'Forbidden'}})).status,403);
  const otherReport=(await call('/api/reports?organizationId='+second,{cookie:admin.cookie})).body.records[0];
  assert.equal((await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[otherReport],intent:'submit'}})).status,403);
- if(!remote){store.close();store=createWorkspace(path,seed);}
+ if(!remote){store.close();store=createWorkspace(path,seed,{demo:demoData});}
  assert.equal((await call('/api/me',{cookie:member.cookie})).body.user.id,member.body.user.id);
  assert.equal((await call('/api/reports',{cookie:member.cookie})).body.records.length,count);
  assert.ok(!(JSON.stringify((await call('/api/me',{cookie:member.cookie})).body)).includes('fixture-password'));
