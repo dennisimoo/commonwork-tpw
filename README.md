@@ -30,7 +30,9 @@ Local accounts and reports persist in `.local/workspace.sqlite`, which is exclud
 - Only submitted, completed courses enter TPW totals. Editing a submitted course preserves its last submission until it is submitted again.
 - Course hours, participants and completions accept an exact number or a range (e.g. 26–50). A range is counted at its midpoint (open-ended ranges at their lower bound), raised to match an exact completion count inside it, stored as `*_range`, and marks the course as an estimate without requiring a note.
 - Counts, dates, missing values and estimates are checked. Estimates or unavailable counts require a note. Concurrent edits cannot silently overwrite each other.
-- View organization or coalition reports, download CSV, and print a report.
+- TPW administrators open **Reporting fields** to rename standard fields and add text, number or date questions. Added fields can be required for submission, removed, or restored. Removal hides a field while preserving saved values; types stay fixed so historical answers remain readable. Configuration is saved in D1 and shared with every organization. The demo editor uses tab-only changes.
+- Similar courses in the same organization (program, facility, yard and start/end dates, ignoring case and extra spaces) trigger a warning before submission. Staff can correct the course or explain why it is a separate cohort. That explanation is saved with the report. This is a review aid; similar records are never silently deleted.
+- View organization or coalition reports, download CSV, and print a report. CSV uses stable standard column names, includes custom fields with their stable references (including removed fields), and adds `program_year` from the start date and `total_participant_hours_delivered` as course hours × completions. Missing inputs produce blank calculated hours; true zero remains zero. Range and estimate markers are exported alongside the values.
 
 ## Actual source data
 

@@ -1,3 +1,4 @@
+import {getFields,exportActivityRows} from './report-fields.mjs';
 import {demoImpact} from './portal.mjs';
 import {escapeHTML as e,number as n,toCSV,parseCSV} from './core.mjs';
 import {normalizeActivity,summarizeActivity,modelImpact} from './impact-core.mjs';
@@ -51,7 +52,7 @@ export async function renderImpact({mount,openModal,download,toast,view='coaliti
   if(action==='reset'){Object.assign(state,{year:'',organization:view==='organization'?all[0]?.organization||'':'',facility:'',program:'',status:''});render();}
   if(action==='assumptions'){const panel=root.querySelector('.impact-assumptions');panel.hidden=!panel.hidden;button.setAttribute('aria-expanded',String(!panel.hidden));}
   if(action==='copy'){try{await navigator.clipboard.writeText(root.querySelector('textarea').value);toast('Grant summary copied.');}catch{root.querySelector('textarea').focus();root.querySelector('textarea').select();toast('Select and copy the summary text.');}}
-  if(action==='export')download('tpw-selected-activity.csv',toCSV(rows));
+  if(action==='export'){try{download('tpw-selected-activity.csv',toCSV(exportActivityRows(rows,await getFields(user))));}catch(error){toast(error.message);}}
   if(action==='import')location.hash='#programs';
   if(action==='quality')openModal(`<div class="impact"><span class="impact-eyebrow">SOURCE & DEFINITIONS</span><h2>Data definitions and source notes</h2><p>${e(dataset.source.verification||'Imported provider records; not independently verified.')}</p><p>${e(dataset.source.hours_definition||'Program/course hours are reported inputs, not staff hours or participant-hours.')}</p><p>${e(dataset.source.period_definition||'Totals are grouped by supplied start/reporting dates.')}</p><p>Completion rate uses only records with both participant and completion counts. The matching denominator here is ${n(total.rateDenominator)}, with ${n(total.rateNumerator)} completions. Missing is not zero.</p><h3>Excluded source entries</h3><ul>${(dataset.source.excluded||[]).map(r=>`<li>${e(r.sheet||'Import')} row ${e(r.row)}: ${e(r.reason)}</li>`).join('')||'<li>No explicitly marked sample/test entries.</li>'}</ul><h3>Possible overlapping records</h3><p>These ${total.overlapGroups.length} groups share organization, program, facility, yard and dates. Different counts may represent separate cohorts. Ask the provider before removing any row.</p><ul>${total.overlapGroups.map(group=>`<li>${e(group[0].organization)} · ${e(group[0].facility)} · ${e(group[0].start_date||'undated')} · rows ${group.map(r=>e(r.source_row||'imported')).join(', ')}</li>`).join('')}</ul>${dataset.source.url?`<a href="${e(dataset.source.url)}" target="_blank" rel="noopener noreferrer">Original partner spreadsheet</a>`:''}</div>`);
   if(action==='report'){

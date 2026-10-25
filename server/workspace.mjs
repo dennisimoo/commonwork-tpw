@@ -1,3 +1,4 @@
+import {defaultFields,validateFields,customValues,duplicateMatches} from '../public/report-fields.mjs';
 import {randomBytes,randomUUID,scrypt as rawScrypt,timingSafeEqual,createHash} from 'node:crypto';
 import {promisify} from 'node:util';
 import {normalizeActivity,applyRanges,usesRanges,rangeFields} from '../public/impact-core.mjs';
@@ -7,6 +8,7 @@ const fail=(status,message)=>{throw Object.assign(Error(message),{status});};
 const json=(body,status=200,headers={})=>Response.json(body,{status,headers:{'cache-control':'no-store',...headers}});
 const clean=(value,max=150)=>String(value??'').trim().slice(0,max);
 export function createWorkspace(db,seed,options={}){
+ const fields=async()=>{const row=await get("SELECT value FROM metadata WHERE key='report_fields'");return row?JSON.parse(row.value):defaultFields();};
  const now=()=>new Date().toISOString();
  const stmt=(sql,...args)=>db.prepare(sql).bind(...args);
  const get=(sql,...args)=>stmt(sql,...args).first();
@@ -57,6 +59,12 @@ export function createWorkspace(db,seed,options={}){
     return await session(await get('SELECT id,username,display_name,role,organization_id FROM users WHERE id=?',id),url);
    }
    const user=await requireUser(request);
+   if(route==='/api/fields'&&method==='GET')return json(await fields());
+   if(route==='/api/fields'&&method==='PUT'){
+    await requireAdmin(request);const previous=await fields();if(body.version!==previous.version)fail(409,'Fields changed in another window. Reload before editing.');
+    let next;try{next={version:previous.version+1,fields:validateFields(body.fields,previous)};}catch(error){fail(400,error.message);}
+    await batch([guard("COALESCE((SELECT json_extract(value,'$.version') FROM metadata WHERE key='report_fields'),0)=?",previous.version),stmt("INSERT INTO metadata(key,value) VALUES('report_fields',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",JSON.stringify(next))]);return json(next);
+   }
    if(route==='/api/organizations'&&method==='GET'){
     await requireAdmin(request);return json({organizations:await all(`SELECT o.*,(SELECT COUNT(*) FROM users u WHERE u.organization_id=o.id) members,(SELECT COUNT(*) FROM reports r WHERE r.organization_id=o.id AND r.published_payload IS NOT NULL) submitted,(SELECT COUNT(*) FROM reports r WHERE r.organization_id=o.id AND r.state='draft') drafts,(SELECT COUNT(*) FROM invitations i WHERE i.organization_id=o.id AND i.used_at IS NULL AND i.revoked=0 AND i.expires>?) invitations FROM organizations o ORDER BY o.name`,Date.now())});
    }
@@ -71,7 +79,7 @@ export function createWorkspace(db,seed,options={}){
    }
    if(route==='/api/reports/batch'&&method==='POST'){
     const orgId=await scopedOrg(user,body.organizationId);if(!orgId)fail(400,'Choose an organization for these reports.');if(!Array.isArray(body.records)||body.records.length<1||body.records.length>30)fail(400,'Save between 1 and 30 program records at a time.');if(!['draft','submit'].includes(body.intent))fail(400,'Choose save draft or submit.');
-    const org=await get('SELECT name FROM organizations WHERE id=?',orgId);
+    const config=await fields();const org=await get('SELECT name FROM organizations WHERE id=?',orgId);
     const incoming=body.records.map((row,index)=>{if(!row||typeof row!=='object')fail(400,`Row ${index+1} is invalid.`);if(clean(row.program).length<1)fail(400,`Row ${index+1}: enter a program name.`);
      let record;try{row=applyRanges(row);record=normalizeActivity({organization:org.name,program:clean(row.program),facility:clean(row.facility)||'Not yet specified',yard:clean(row.yard,80),status:clean(row.status)||'Planned',start_date:row.start_date||null,end_date:row.end_date||null,program_hours:row.program_hours,participants:row.participants,completions:row.completions,notes:clean(row.notes,3000)});}catch(error){fail(400,`Row ${index+1}: ${error.message}`);}
      if(!['Planned','In Progress','Completed'].includes(record.status))fail(400,`Row ${index+1}: choose a valid schedule status.`);
@@ -81,14 +89,19 @@ export function createWorkspace(db,seed,options={}){
      try{record.schedule=normalizeSchedule(row.schedule);}catch(error){fail(400,`Row ${index+1}: ${error.message}`);}
      if(body.intent==='submit'&&!seed.facilities.includes(record.facility))fail(400,`Row ${index+1}: choose a facility from TPW’s reference list.`);
      if(body.intent==='submit'&&[record.program_hours,record.participants,record.completions].some(v=>v==null)&&!record.notes)fail(400,`Row ${index+1}: explain unavailable course hours or counts in Notes, or save a draft.`);
+     try{record.custom_fields=customValues(row,config,body.intent==='submit');}catch(error){fail(400,`Row ${index+1}: ${error.message}`);}
      if(row.id&&typeof row.id!=='string')fail(400,'Invalid report reference.');return {id:row.id||null,version:row.version,record};
     });
     if(new Set(incoming.filter(r=>r.id).map(r=>r.id)).size!==incoming.filter(r=>r.id).length)fail(400,'The same report appears more than once.');
     const existingRows=new Map((await all('SELECT * FROM reports WHERE organization_id=?',orgId)).map(row=>[row.id,row]));
-    const existingInputs=incoming.filter(row=>row.id),statements=[],savedIds=[];if(existingInputs.length)statements.push(guard(existingInputs.map(()=>"EXISTS(SELECT 1 FROM reports WHERE id=? AND organization_id=? AND version=?)").join(' AND '),...existingInputs.flatMap(row=>[row.id,orgId,row.version??-1])));
+    if(body.intent==='submit'){
+     const matches=duplicateMatches(incoming.map(r=>({...r.record,id:r.id})),[...existingRows.values()].map(r=>({...JSON.parse(r.payload),id:r.id})));
+     if(matches.length){const reason=clean(body.duplicateReview,1000);if(reason.length<10)return json({error:'Similar courses already exist. Review the matches and explain why these are separate courses before submitting.',code:'duplicates',matches},409);for(const row of incoming)row.record.duplicate_review=reason;}
+    }
+    const existingInputs=incoming.filter(row=>row.id),statements=[guard("COALESCE((SELECT json_extract(value,'$.version') FROM metadata WHERE key='report_fields'),0)=?",config.version)],savedIds=[];if(existingInputs.length)statements.push(guard(existingInputs.map(()=>"EXISTS(SELECT 1 FROM reports WHERE id=? AND organization_id=? AND version=?)").join(' AND '),...existingInputs.flatMap(row=>[row.id,orgId,row.version??-1])));
     for(const row of incoming){const existing=row.id?existingRows.get(row.id):null;if(row.id&&(!existing||existing.organization_id!==orgId))fail(403,'One of these reports belongs to another organization or no longer exists.');if(existing&&existing.version!==row.version)fail(409,'A report was changed in another window. Reload before editing it.');const id=row.id||randomUUID(),state=body.intent==='submit'?'submitted':'draft',version=existing?existing.version+1:1;
 
-      const payload={...row.record,...(existing?.origin==='workbook'?{source_sheet:JSON.parse(existing.payload).source_sheet,source_row:JSON.parse(existing.payload).source_row}:{})};
+      const previous=existing?JSON.parse(existing.payload):{};const payload={...row.record,custom_fields:{...Object.fromEntries(Object.entries(previous.custom_fields||{}).filter(([id])=>config.fields.some(f=>f.id===id&&!f.active))),...row.record.custom_fields},...(previous.duplicate_review&&!row.record.duplicate_review?{duplicate_review:previous.duplicate_review}:{}),...(existing?.origin==='workbook'?{source_sheet:JSON.parse(existing.payload).source_sheet,source_row:JSON.parse(existing.payload).source_row}:{})};
       if(existing)statements.push(stmt('UPDATE reports SET payload=?,state=?,version=?,updated_at=?,updated_by=?,published_payload=? WHERE id=?',JSON.stringify(payload),state,version,now(),user.id,body.intent==='submit'?JSON.stringify(payload):existing.published_payload,id));else statements.push(stmt('INSERT INTO reports VALUES(?,?,?,?,?,?,?,?,?)',id,orgId,JSON.stringify(payload),state,version,'partner',now(),user.id,body.intent==='submit'?JSON.stringify(payload):null));
       savedIds.push(id);
      }statements.push(stmt(`INSERT INTO audit_events(actor_id,report_id,action,created_at) SELECT ?,id,?,? FROM reports WHERE id IN (${savedIds.map(()=>'?').join(',')})`,user.id,body.intent==='submit'?'submitted':'saved draft',now(),...savedIds));try{await batch(statements);}catch(error){if(/mutation_guards|NOT NULL constraint failed/i.test(error.message))fail(409,'A report was changed in another window. Reload before editing it.');throw error;}return json({records:await reportsFor(orgId),message:body.intent==='submit'?'Reports submitted to TPW.':'Drafts saved. Drafts do not enter coalition totals.'});

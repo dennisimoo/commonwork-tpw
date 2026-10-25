@@ -1,8 +1,9 @@
+import {renderFields} from './fields-editor.mjs';
 import {api,loadSession,renderAccess,renderOrganizations,renderPrograms as renderProgramWorkspace,resetProgramCaches} from './portal.mjs';
 import {escapeHTML as e, number as n, percent, parseCSV, importFields, analyzeImport, toCSV} from './core.mjs';
 
 const main = document.querySelector('main'), dialog = document.querySelector('dialog');
-const names = {organizations:'Organizations',calendar:'Calendar',programs:'Programs',impact:'Coalition impact',organization:'My organization',research:'Public story research',overview:'Overview',achievements:'Program outcomes',records:'Public records',coalition:'Coalition reports',sources:'Data library'};
+const names = {fields:'Reporting fields',organizations:'Organizations',calendar:'Calendar',programs:'Programs',impact:'Coalition impact',organization:'My organization',research:'Public story research',overview:'Overview',achievements:'Program outcomes',records:'Public records',coalition:'Coalition reports',sources:'Data library'};
 const metricNames = {return:'Return to prison',conviction:'Conviction',arrest:'Arrest'};
 let workspaceSession;
 let routeVersion=0;
@@ -140,11 +141,11 @@ async function route(){
   if(!workspaceSession?.user||requested.startsWith('join/')){await renderAccess({mount:main,session:workspaceSession,isCurrent,onDemo:()=>{resetProgramCaches();sessionStorage.setItem('commonwork-demo','1');workspaceSession.user={role:'demo',display_name:'Workbook demo'};updateAccount();location.hash='#programs';route();},onAuthenticated:async()=>{sessionStorage.removeItem('commonwork-demo');resetProgramCaches();workspaceSession=await loadSession();updateAccount();location.hash=workspaceSession.user.role==='admin'?'#organizations':'#programs';await route();}});return;}
   let view=['directory','records'].includes(requested)?'impact':requested==='participants'?'research':requested;
   if(workspaceSession.user.role==='member'&&view==='impact')view='organization';
-  if(workspaceSession.user.role==='member'&&view==='organizations'){location.hash='#programs';return;}
+  if(workspaceSession.user.role==='member'&&['organizations','fields'].includes(view)){location.hash='#programs';return;}
   if(view==='main'){main.focus();return;}
   document.querySelector('#page-name').textContent=names[view]||'Directory';
   document.querySelectorAll('nav a').forEach(a=>{a.classList.toggle('active',a.dataset.view===view);if(a.dataset.view===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-  try{await ({organizations:()=>renderOrganizations({mount:main,openModal:modal,toast,user:workspaceSession.user,isCurrent}),programs:()=>renderProgramWorkspace({mount:main,user:workspaceSession.user,toast,isCurrent}),calendar:()=>renderProgramWorkspace({mount:main,user:workspaceSession.user,toast,view:'calendar',isCurrent}),impact:()=>renderActivity('coalition',isCurrent),organization:()=>renderActivity('organization',isCurrent),research:renderPeople,overview:renderOverview,achievements:renderPrograms,coalition:renderCoalition,sources:renderSources}[view]||(()=>renderActivity('coalition',isCurrent)))();}
+  try{await ({fields:()=>renderFields({mount:main,user:workspaceSession.user,toast,isCurrent}),organizations:()=>renderOrganizations({mount:main,openModal:modal,toast,user:workspaceSession.user,isCurrent}),programs:()=>renderProgramWorkspace({mount:main,user:workspaceSession.user,toast,isCurrent}),calendar:()=>renderProgramWorkspace({mount:main,user:workspaceSession.user,toast,view:'calendar',isCurrent}),impact:()=>renderActivity('coalition',isCurrent),organization:()=>renderActivity('organization',isCurrent),research:renderPeople,overview:renderOverview,achievements:renderPrograms,coalition:renderCoalition,sources:renderSources}[view]||(()=>renderActivity('coalition',isCurrent)))();}
   catch(err){if(!isCurrent())return;main.innerHTML=`<div class="panel empty"><h2>We couldn’t load this view.</h2><p>${e(err.message)}</p><a class="button" href="#overview">Return to overview</a></div>`;}
 }
 function updateAccount(){

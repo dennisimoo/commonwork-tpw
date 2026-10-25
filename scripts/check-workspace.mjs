@@ -52,6 +52,28 @@ try{
  assert.equal((await call('/api/me',{cookie:member.cookie})).body.user.id,member.body.user.id);
  assert.equal((await call('/api/reports',{cookie:member.cookie})).body.records.length,count);
  assert.ok(!(JSON.stringify((await call('/api/me',{cookie:member.cookie})).body)).includes('fixture-password'));
+ // Field configuration and report extensions run against both SQLite and the actual Worker/D1.
+ let config=(await call('/api/fields',{cookie:admin.cookie})).body;
+ assert.equal((await call('/api/fields',{method:'PUT',cookie:member.cookie,body:config})).status,403);
+ const customId='custom_12345678-1234-1234-1234-123456789abc';
+ config.fields[0].label='Course title';config.fields.push({id:customId,label:'Facilitator hours',type:'number',active:true,required:true});
+ const savedConfig=await call('/api/fields',{method:'PUT',cookie:admin.cookie,body:config});assert.equal(savedConfig.status,200);assert.equal(savedConfig.body.version,1);
+ assert.equal((await call('/api/fields',{method:'PUT',cookie:admin.cookie,body:config})).status,409);
+ config=savedConfig.body;
+ assert.equal((await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[{...payload,program:'Additional field fixture'}],intent:'submit'}})).status,400);
+ const withCustom={...payload,program:'Additional field fixture',custom_fields:{[customId]:3.5}};
+ const customSaved=await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[withCustom],intent:'submit'}});assert.equal(customSaved.status,200);
+ let customRow=customSaved.body.records.find(r=>r.program===withCustom.program);assert.equal(customRow.custom_fields[customId],3.5);
+ const duplicate=await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[withCustom],intent:'submit'}});assert.equal(duplicate.status,409);assert.equal(duplicate.body.code,'duplicates');assert.equal(duplicate.body.matches.length,1);
+ const confirmed=await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[withCustom],intent:'submit',duplicateReview:'Separate afternoon cohort with different staff.'}});assert.equal(confirmed.status,200);
+ assert.ok(confirmed.body.records.some(r=>r.duplicate_review==='Separate afternoon cohort with different staff.'));
+ config.fields.find(f=>f.id===customId).label='Staff hours';config.fields.find(f=>f.id===customId).active=false;
+ assert.equal((await call('/api/fields',{method:'PUT',cookie:admin.cookie,body:config})).status,200);
+ const archivedEdit=await call('/api/reports/batch',{method:'POST',cookie:member.cookie,body:{records:[{...customRow,custom_fields:{}}],intent:'draft'}});assert.equal(archivedEdit.status,200);
+ assert.equal(archivedEdit.body.records.find(r=>r.id===customRow.id).custom_fields[customId],3.5,'Removing fields must retain saved values.');
+ if(!remote){store.close();store=createWorkspace(path,seed);}
+ const persisted=(await call('/api/fields',{cookie:member.cookie})).body;assert.equal(persisted.fields[0].label,'Course title');assert.equal(persisted.fields.find(f=>f.id===customId).active,false);
+ console.log('PASS: field editing, permission boundaries, stale schema rejection, required values, archived value retention, duplicate review and persisted configuration.');
  await call('/api/auth/logout',{method:'POST',cookie:member.cookie,body:{}});assert.equal((await call('/api/impact',{cookie:member.cookie})).status,401);
  console.log('PASS: administrator setup, invitation acceptance/reuse, org isolation, persisted drafts/submissions, published revisions, batch rollback, optimistic locking, CSRF and logout.');
 }finally{store?.close();await rm(dir,{recursive:true,force:true});}
