@@ -64,7 +64,7 @@ The administrator enters this setup code once and chooses their own username/pas
 
 ### Automatic deployments with Cloudflare Builds
 
-Cloudflare Builds connects directly to the private `dennisimoo/commonwork-tpw` repository. Pushes to `main` run the checks, apply D1 migrations and deploy the Worker. GitHub Actions is not used.
+Cloudflare Builds connects directly to the private `dennisimoo/commonwork-tpw` repository. Pushes to `main` run the checks, apply D1 migrations and deploy the Worker. GitHub Actions is not used. Other branches do not build or deploy to production.
 
 Build settings:
 
