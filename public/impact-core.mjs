@@ -11,7 +11,7 @@ export function normalizeActivity(row,index=0){
   const date=(...keys)=>{const value=String(pick(...keys)).trim().slice(0,10);if(!value||/^(tbd|unknown)$/i.test(value))return null;if(!/^\d{4}-\d{2}-\d{2}$/.test(value)||Number.isNaN(+new Date(value+'T00:00:00Z'))||new Date(value+'T00:00:00Z').toISOString().slice(0,10)!==value)throw Error(`Row ${index+1}: use YYYY-MM-DD dates.`);return value;};
   const record={...row,organization:String(pick('organization','Organization Name')).trim(),program:String(pick('program','Program Name')).trim(),facility:String(pick('facility','CDCR Facility','CDCR Facilities')).trim(),yard:String(pick('yard')).trim(),status:String(pick('status','Schedule Status (Planned, In Progress, Completed)')).trim(),start_date:date('start_date','Start Date','activity_date','reporting_date'),end_date:date('end_date','End Date'),program_hours:numeric(pick('program_hours','Total Programming hours','total_program_hours','Course Hours (per Participant)')),participants:numeric(pick('participants','Number of Participants'),true),completions:numeric(pick('completions','Number of Participants Completed'),true),notes:String(pick('notes')).trim()};
   if(!record.organization||!record.program||!record.facility)throw Error(`Row ${index+1}: organization, program and facility are required.`);
-  if(record.participants!==null&&record.completions!==null&&record.completions>record.participants)throw Error(`Row ${index+1}: completions exceed participants.`);
+  if(record.participants!==null&&record.completions!==null&&record.completions>(record.participants_max??record.participants))throw Error(`Row ${index+1}: completions exceed participants.`);
   if(record.start_date&&record.end_date&&record.end_date<record.start_date)throw Error(`Row ${index+1}: end date precedes start date.`);
   return record;
 }
@@ -21,27 +21,31 @@ export function summarizeActivity(rows){
   const comparable=rows.filter(row=>row.participants!=null&&row.completions!=null);
   const denominator=comparable.reduce((n,row)=>n+row.participants,0),numerator=comparable.reduce((n,row)=>n+row.completions,0);
   const groups=new Map();for(const row of rows){const k=JSON.stringify([row.organization,row.program,row.facility,row.yard,row.start_date,row.end_date]);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(row);}
-  return {participantHours:participantHourRows.reduce((sum,row)=>sum+row.program_hours*row.completions,0),knownParticipantHours:participantHourRows.length,records:rows.length,participants:sum('participants'),completions:sum('completions'),hours:sum('program_hours'),knownParticipants:known('participants'),knownCompletions:known('completions'),knownHours:known('program_hours'),rate:denominator?numerator/denominator:null,rateNumerator:numerator,rateDenominator:denominator,comparable:comparable.length,organizations:new Set(rows.map(r=>r.organization)).size,facilities:new Set(rows.map(r=>r.facility)).size,programs:new Set(rows.map(r=>r.program)).size,overlapGroups:[...groups.values()].filter(group=>group.length>1)};
+  const sumHigh=field=>rows.reduce((total,row)=>total+(high(row,field)??0),0);
+  return {participantsMax:sumHigh('participants'),completionsMax:sumHigh('completions'),hoursMax:sumHigh('program_hours'),participantHoursMax:participantHourRows.reduce((sum,row)=>sum+high(row,'program_hours')*high(row,'completions'),0),rangedRecords:rows.filter(usesRanges).length,participantHours:participantHourRows.reduce((sum,row)=>sum+row.program_hours*row.completions,0),knownParticipantHours:participantHourRows.length,records:rows.length,participants:sum('participants'),completions:sum('completions'),hours:sum('program_hours'),knownParticipants:known('participants'),knownCompletions:known('completions'),knownHours:known('program_hours'),rate:denominator?numerator/denominator:null,rateNumerator:numerator,rateDenominator:denominator,comparable:comparable.length,organizations:new Set(rows.map(r=>r.organization)).size,facilities:new Set(rows.map(r=>r.facility)).size,programs:new Set(rows.map(r=>r.program)).size,overlapGroups:[...groups.values()].filter(group=>group.length>1)};
 }
 export function modelImpact({released,baseline,scenario,years,annualCost,programCost}){
   if(![released,baseline,scenario,years,annualCost].every(Number.isFinite)||released<0||!Number.isInteger(released)||baseline<0||baseline>100||scenario<0||scenario>100||years<0||annualCost<0||programCost!==null&&(!Number.isFinite(programCost)||programCost<0))throw Error('Enter valid nonnegative assumptions; rates must be 0–100%.');
   const returns=released*(baseline-scenario)/100,avoidedYears=returns*years,costs=avoidedYears*annualCost;
   return {returns,years:avoidedYears,costs,ratio:programCost>0?costs/programCost:null,roi:programCost>0?(costs-programCost)/programCost:null};
 }
-// Range options for partners who cannot report exact numbers. Each range is counted at its
-// midpoint (open-ended ranges at their lower bound) and the record is marked as estimated.
-const range=(id,label,min,max,value)=>({id,label,min,max,value});
-const peopleRanges=[range('1-10','1–10',1,10,5),range('11-25','11–25',11,25,18),range('26-50','26–50',26,50,38),range('51-100','51–100',51,100,75),range('100+','More than 100',101,Infinity,101)];
-export const RANGES={program_hours:[range('1-4','1–4 hours',1,4,2.5),range('5-20','5–20 hours',5,20,12.5),range('21-50','21–50 hours',21,50,35),range('51-100','51–100 hours',51,100,75),range('101-200','101–200 hours',101,200,150),range('200+','More than 200 hours',201,Infinity,201)],participants:peopleRanges,completions:peopleRanges};
-export const rangeFields=Object.keys(RANGES);
-export function findRange(key,id){if(id==null||id==='')return null;const found=RANGES[key]?.find(r=>r.id===id);if(!found)throw Error('Choose a listed range or enter an exact number.');return found;}
-export function applyRanges(row){
-  const out={...row},used={};
-  for(const key of rangeFields){const chosen=findRange(key,row[key+'_range']);out[key+'_range']=chosen?chosen.id:null;if(chosen){used[key]=chosen;out[key]=chosen.value;}}
-  // Keep range estimates consistent with an exact count inside the same range.
-  if(used.participants&&!used.completions&&out.completions!=null&&out.completions>out.participants&&out.completions<=used.participants.max)out.participants=out.completions;
-  if(used.completions&&out.participants!=null&&out.completions>out.participants&&used.completions.min<=out.participants)out.completions=out.participants;
-  if(Object.keys(used).length&&(out.data_basis??'reported')==='reported')out.data_basis='estimated';
+// Partners who cannot report an exact number can enter their own range instead.
+// The field itself holds the low end ("from"); `<field>_max` holds the high end ("to").
+// Totals use the low end so nothing is overstated; dashboards also show the high end.
+export const rangeFields=['program_hours','participants','completions'];
+export function normalizeRanges(row){
+  const out={...row};let ranged=false;
+  for(const key of rangeFields){
+    const legacy=typeof row[key+'_range']==='string'&&/^(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$/.exec(row[key+'_range']);delete out[key+'_range'];
+    if(legacy&&row[key+'_max']==null){out[key]=Number(legacy[1]);out[key+'_max']=Number(legacy[2]);}
+    const high=numeric(out[key+'_max'],key!=='program_hours'),low=numeric(out[key],key!=='program_hours');
+    if(high==null){out[key+'_max']=null;continue;}
+    if(low==null)throw Error('Enter both ends of the range, or switch back to an exact number.');
+    if(high<low)throw Error('The end of a range must be at least its start.');
+    out[key]=low;out[key+'_max']=high===low?null:high;if(out[key+'_max']!=null)ranged=true;
+  }
+  if(ranged&&(out.data_basis??'reported')==='reported')out.data_basis='estimated';
   return out;
 }
-export const usesRanges=row=>rangeFields.some(key=>row[key+'_range']);
+export const usesRanges=row=>rangeFields.some(key=>row[key+'_max']!=null&&row[key+'_max']!=='');
+export const high=(row,key)=>row[key+'_max']??row[key];

@@ -32,7 +32,7 @@ export function duplicateMatches(incoming,existing){
  return incoming.flatMap((r,index)=>{const k=key(r);const matches=k?combined.filter(other=>other!==r&&key(other)===k):[];return matches.length?[{index,program:r.program,facility:r.facility,yard:r.yard||'',start_date:r.start_date,end_date:r.end_date,matches:matches.length}]:[];});
 }
 export function exportActivityRows(rows,config=defaultFields()){
- const keys=['organization','program','facility','yard','status','start_date','end_date','program_hours','participants','completions','notes','data_basis','program_hours_range','participants_range','completions_range','source_sheet','source_row','duplicate_review'];
+ const keys=['organization','program','facility','yard','status','start_date','end_date','program_hours','participants','completions','notes','data_basis','program_hours_max','participants_max','completions_max','source_sheet','source_row','duplicate_review'];
  return rows.map(r=>({...Object.fromEntries(keys.map(k=>[k,r[k]??''])),program_year:r.start_date?Number(r.start_date.slice(0,4)):'',total_participant_hours_delivered:r.program_hours!=null&&r.program_hours!==''&&r.completions!=null&&r.completions!==''?Number(r.program_hours)*Number(r.completions):'',...Object.fromEntries(config.fields.filter(f=>f.type!=='core').map(f=>[`${f.label} [${f.id}]`,r.custom_fields?.[f.id]??'']))}));
 }
 let demoConfig=defaultFields();

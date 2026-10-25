@@ -15,7 +15,7 @@ npm ci
 npm start
 ```
 
-Open http://localhost:4173. Select **Explore the demo** to try the app without creating an account. The demo uses synthetic data (`public/data/demo-programs.json`, from `node scripts/generate-demo.mjs`): three fictional organizations and 48 courses at real CDCR facility names, including estimates, a range and missing counts. It contains no partner data. Demo edits stay in the tab and reset on reload or exit.
+Open http://localhost:4173. Select **Explore the demo** to try the app without creating an account. The demo uses synthetic data (`public/data/demo-programs.json`, from `node scripts/generate-demo.mjs`): three fictional organizations and 48 courses at real CDCR facility names, including estimates, ranges and missing counts. It contains no partner data. Demo edits stay in the tab and reset on reload or exit.
 
 To save actual reports, exit demo mode and create the first TPW administrator account. Add a nonprofit, copy its invitation link, and share it with a staff member. Invitations expire after seven days and can be used once. Staff see only their organization's records. Localhost invitations require access to the same server; the deployed Worker provides a shared HTTPS address.
 
@@ -28,7 +28,7 @@ Local accounts and reports persist in `.local/workspace.sqlite`, which is exclud
 - Choose weekly days, time and session length in Calendar. Scheduled hours are a plan, not attendance. Apply the calculated course hours explicitly.
 - Save changed courses as drafts or submit completed courses together (up to 30 changed courses per save, within D1 query and parameter limits).
 - Only submitted, completed courses enter TPW totals. Editing a submitted course preserves its last submission until it is submitted again.
-- Course hours, participants and completions accept an exact number or a range (e.g. 26–50). A range is counted at its midpoint (open-ended ranges at their lower bound), raised to match an exact completion count inside it, stored as `*_range`, and marks the course as an estimate without requiring a note.
+- Course hours, participants and completions accept an exact number or a range the partner types (from–to, e.g. 30 to 40). The low end is stored in the field and the high end in `*_max`; the course is marked as an estimate without requiring a note. Totals count the low end, and the dashboard shows lowest–highest whenever ranges are included.
 - Counts, dates, missing values and estimates are checked. Estimates or unavailable counts require a note. Concurrent edits cannot silently overwrite each other.
 - TPW administrators open **Reporting fields** to rename standard fields and add text, number or date questions. Added fields can be required for submission, removed, or restored. Removal hides a field while preserving saved values; types stay fixed so historical answers remain readable. Configuration is saved in D1 and shared with every organization. The demo editor uses tab-only changes.
 - Similar courses in the same organization (program, facility, yard and start/end dates, ignoring case and extra spaces) trigger a warning before submission. Staff can correct the course or explain why it is a separate cohort. That explanation is saved with the report. This is a review aid; similar records are never silently deleted.

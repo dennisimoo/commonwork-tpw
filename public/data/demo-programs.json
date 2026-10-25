@@ -43,21 +43,21 @@
  ],
  "records": [
   {
-   "facility": "North Kern State Prison (NKSP)",
-   "yard": "South",
+   "facility": "Mule Creek State Prison (MCSP)",
+   "yard": "D Yard",
    "organization": "Willowbank Mentoring Circle",
    "program": "Restorative Conversations",
    "status": "Completed",
-   "start_date": "2024-01-19",
-   "end_date": "2024-04-12",
+   "start_date": "2024-01-15",
+   "end_date": "2024-04-08",
    "program_hours": 48,
-   "participants": 37,
-   "completions": 28,
-   "notes": "Sessions were led by inside facilitators; participant count is estimated from the enrollment list.",
-   "data_basis": "estimated",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "participants": 42,
+   "completions": 30,
+   "notes": "",
+   "data_basis": "reported",
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "California State Prison, Centinela (CEN)",
@@ -72,29 +72,46 @@
    "completions": 18,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "California Correctional Institution (CCI)",
-   "yard": "Facility C",
+   "facility": "Substance Abuse Treatment Facility and State Prison, Corcoran (SATF-CSP, Corcoran)",
+   "yard": "C Yard",
    "organization": "Kestrel Reentry Learning",
    "program": "Job Readiness Lab",
    "status": "Completed",
-   "start_date": "2024-03-14",
-   "end_date": "2024-06-20",
+   "start_date": "2024-02-10",
+   "end_date": "2024-05-18",
    "program_hours": 60,
-   "participants": 21,
-   "completions": 12,
+   "participants": 24,
+   "completions": 18,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "California Men’s Colony (CMC)",
+   "facility": "Richard J. Donovan Correctional Facility (RJD)",
+   "yard": "South",
+   "organization": "Kestrel Reentry Learning",
+   "program": "Job Readiness Lab",
+   "status": "Completed",
+   "start_date": "2024-03-02",
+   "end_date": "2024-06-08",
+   "program_hours": 60,
+   "participants": 37,
+   "completions": 33,
+   "notes": "",
+   "data_basis": "reported",
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
+  },
+  {
+   "facility": "Mule Creek State Prison (MCSP)",
    "yard": "A Yard",
    "organization": "Willowbank Mentoring Circle",
    "program": "Peer Mentor Training",
@@ -106,12 +123,12 @@
    "completions": 12,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "Wasco State Prison (WSP)",
+   "facility": "Pelican Bay State Prison (PBSP)",
    "yard": "South",
    "organization": "Willowbank Mentoring Circle",
    "program": "Peer Mentor Training",
@@ -123,9 +140,9 @@
    "completions": 14,
    "notes": "Sessions were led by inside facilitators; participant count is estimated from the enrollment list.",
    "data_basis": "estimated",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "San Quentin Rehabilitation Center (SQ)",
@@ -140,12 +157,12 @@
    "completions": 21,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "Wasco State Prison (WSP)",
+   "facility": "Pelican Bay State Prison (PBSP)",
    "yard": "",
    "organization": "Willowbank Mentoring Circle",
    "program": "Restorative Conversations",
@@ -157,26 +174,26 @@
    "completions": 33,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "North Kern State Prison (NKSP)",
-   "yard": "North",
-   "organization": "Willowbank Mentoring Circle",
-   "program": "Restorative Conversations",
+   "facility": "California Correctional Institution (CCI)",
+   "yard": "Facility C",
+   "organization": "Kestrel Reentry Learning",
+   "program": "Job Readiness Lab",
    "status": "Completed",
-   "start_date": "2024-07-01",
-   "end_date": "2024-09-23",
-   "program_hours": 48,
-   "participants": 12,
-   "completions": 9,
+   "start_date": "2024-05-19",
+   "end_date": "2024-08-25",
+   "program_hours": 60,
+   "participants": 39,
+   "completions": 29,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "San Quentin Rehabilitation Center (SQ)",
@@ -191,9 +208,9 @@
    "completions": 24,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Substance Abuse Treatment Facility and State Prison, Corcoran (SATF-CSP, Corcoran)",
@@ -208,26 +225,9 @@
    "completions": 18,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
-  },
-  {
-   "facility": "Richard J. Donovan Correctional Facility (RJD)",
-   "yard": "D Yard",
-   "organization": "Kestrel Reentry Learning",
-   "program": "Financial Foundations",
-   "status": "Completed",
-   "start_date": "2024-08-01",
-   "end_date": "2024-10-10",
-   "program_hours": 40,
-   "participants": 38,
-   "completions": 14,
-   "notes": "",
-   "data_basis": "estimated",
-   "program_hours_range": null,
-   "participants_range": "26-50",
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "California State Prison, Centinela (CEN)",
@@ -242,29 +242,29 @@
    "completions": 9,
    "notes": "Sessions were led by inside facilitators; participant count is estimated from the enrollment list.",
    "data_basis": "estimated",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "California State Prison, Solano (SOL)",
+   "facility": "Pelican Bay State Prison (PBSP)",
    "yard": "D Yard",
    "organization": "Kestrel Reentry Learning",
-   "program": "Job Readiness Lab",
+   "program": "Financial Foundations",
    "status": "Completed",
-   "start_date": "2024-08-07",
-   "end_date": "2024-11-13",
-   "program_hours": 60,
-   "participants": 22,
-   "completions": 13,
+   "start_date": "2024-08-15",
+   "end_date": "2024-10-24",
+   "program_hours": 40,
+   "participants": 26,
+   "completions": 17,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "Wasco State Prison (WSP)",
+   "facility": "Pelican Bay State Prison (PBSP)",
    "yard": "North",
    "organization": "Willowbank Mentoring Circle",
    "program": "Peer Mentor Training",
@@ -276,29 +276,29 @@
    "completions": 27,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Avenal State Prison (ASP)",
-   "yard": "South",
-   "organization": "Kestrel Reentry Learning",
-   "program": "Job Readiness Lab",
+   "yard": "B Yard",
+   "organization": "Willowbank Mentoring Circle",
+   "program": "Restorative Conversations",
    "status": "Completed",
-   "start_date": "2024-10-20",
-   "end_date": "2025-01-26",
-   "program_hours": 60,
-   "participants": 30,
+   "start_date": "2024-10-10",
+   "end_date": "2025-01-02",
+   "program_hours": 48,
+   "participants": 33,
    "completions": 25,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "California State Prison, Centinela (CEN)",
+   "facility": "California Correctional Institution (CCI)",
    "yard": "South",
    "organization": "Willowbank Mentoring Circle",
    "program": "Peer Mentor Training",
@@ -310,9 +310,26 @@
    "completions": 22,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
+  },
+  {
+   "facility": "Substance Abuse Treatment Facility and State Prison, Corcoran (SATF-CSP, Corcoran)",
+   "yard": "",
+   "organization": "Kestrel Reentry Learning",
+   "program": "Job Readiness Lab",
+   "status": "Completed",
+   "start_date": "2024-12-07",
+   "end_date": "2025-03-15",
+   "program_hours": 60,
+   "participants": 34,
+   "completions": 23,
+   "notes": "",
+   "data_basis": "reported",
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Wasco State Prison (WSP)",
@@ -327,26 +344,26 @@
    "completions": 15,
    "notes": "Sessions were led by inside facilitators; participant count is estimated from the enrollment list.",
    "data_basis": "estimated",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "Richard J. Donovan Correctional Facility (RJD)",
-   "yard": "C Yard",
+   "facility": "California State Prison, Sacramento (SAC)",
+   "yard": "",
    "organization": "Kestrel Reentry Learning",
    "program": "Job Readiness Lab",
    "status": "Completed",
-   "start_date": "2025-01-17",
-   "end_date": "2025-04-25",
+   "start_date": "2025-01-08",
+   "end_date": "2025-04-16",
    "program_hours": 60,
-   "participants": 45,
-   "completions": 23,
+   "participants": 21,
+   "completions": 21,
    "notes": "",
-   "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "data_basis": "estimated",
+   "program_hours_max": null,
+   "participants_max": 31,
+   "completions_max": null
   },
   {
    "facility": "San Quentin Rehabilitation Center (SQ)",
@@ -361,60 +378,26 @@
    "completions": 14,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "Wasco State Prison (WSP)",
-   "yard": "South",
+   "facility": "California Health Care Facility (CHCF), Stockton",
+   "yard": "B Yard",
    "organization": "Willowbank Mentoring Circle",
    "program": "Restorative Conversations",
    "status": "Completed",
-   "start_date": "2025-02-16",
-   "end_date": "2025-05-11",
+   "start_date": "2025-03-05",
+   "end_date": "2025-05-28",
    "program_hours": 48,
-   "participants": 21,
-   "completions": 14,
-   "notes": "Sessions were led by inside facilitators; participant count is estimated from the enrollment list.",
-   "data_basis": "estimated",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
-  },
-  {
-   "facility": "California State Prison, Solano (SOL)",
-   "yard": "Facility C",
-   "organization": "Kestrel Reentry Learning",
-   "program": "Financial Foundations",
-   "status": "Completed",
-   "start_date": "2025-02-18",
-   "end_date": "2025-04-29",
-   "program_hours": 40,
-   "participants": 32,
-   "completions": 27,
-   "notes": "",
+   "participants": 23,
+   "completions": null,
+   "notes": "Completion count not yet received from the facility.",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
-  },
-  {
-   "facility": "Avenal State Prison (ASP)",
-   "yard": "South",
-   "organization": "Willowbank Mentoring Circle",
-   "program": "Restorative Conversations",
-   "status": "Completed",
-   "start_date": "2025-02-21",
-   "end_date": "2025-05-16",
-   "program_hours": 48,
-   "participants": 21,
-   "completions": 16,
-   "notes": "",
-   "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Richard J. Donovan Correctional Facility (RJD)",
@@ -429,9 +412,9 @@
    "completions": 11,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Mule Creek State Prison (MCSP)",
@@ -446,29 +429,12 @@
    "completions": 16,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Pelican Bay State Prison (PBSP)",
-   "yard": "South",
-   "organization": "Kestrel Reentry Learning",
-   "program": "Job Readiness Lab",
-   "status": "Completed",
-   "start_date": "2025-04-10",
-   "end_date": "2025-07-17",
-   "program_hours": 60,
-   "participants": 37,
-   "completions": 30,
-   "notes": "",
-   "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
-  },
-  {
-   "facility": "Wasco State Prison (WSP)",
    "yard": "C Yard",
    "organization": "Willowbank Mentoring Circle",
    "program": "Restorative Conversations",
@@ -480,9 +446,9 @@
    "completions": 15,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Substance Abuse Treatment Facility and State Prison, Corcoran (SATF-CSP, Corcoran)",
@@ -497,12 +463,12 @@
    "completions": 18,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "California State Prison, Centinela (CEN)",
+   "facility": "California Correctional Institution (CCI)",
    "yard": "North",
    "organization": "Willowbank Mentoring Circle",
    "program": "Peer Mentor Training",
@@ -514,9 +480,9 @@
    "completions": 20,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "San Quentin Rehabilitation Center (SQ)",
@@ -531,12 +497,12 @@
    "completions": 27,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "California Men’s Colony (CMC)",
+   "facility": "Mule Creek State Prison (MCSP)",
    "yard": "Facility C",
    "organization": "Willowbank Mentoring Circle",
    "program": "Peer Mentor Training",
@@ -548,12 +514,12 @@
    "completions": 10,
    "notes": "Sign-in sheets were not available from the facility; counts are our best estimate.",
    "data_basis": "estimated",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "North Kern State Prison (NKSP)",
+   "facility": "California Health Care Facility (CHCF), Stockton",
    "yard": "A Yard",
    "organization": "Willowbank Mentoring Circle",
    "program": "Peer Mentor Training",
@@ -565,9 +531,9 @@
    "completions": 26,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "California Correctional Institution (CCI)",
@@ -578,13 +544,13 @@
    "start_date": "2025-09-25",
    "end_date": "2025-12-04",
    "program_hours": 40,
-   "participants": 38,
+   "participants": 23,
    "completions": 17,
    "notes": "",
    "data_basis": "estimated",
-   "program_hours_range": null,
-   "participants_range": "26-50",
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": 28,
+   "completions_max": null
   },
   {
    "facility": "San Quentin Rehabilitation Center (SQ)",
@@ -599,26 +565,26 @@
    "completions": 18,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "California Men’s Colony (CMC)",
-   "yard": "South",
-   "organization": "Willowbank Mentoring Circle",
-   "program": "Peer Mentor Training",
+   "facility": "California Correctional Institution (CCI)",
+   "yard": "B Yard",
+   "organization": "Kestrel Reentry Learning",
+   "program": "Financial Foundations",
    "status": "Completed",
-   "start_date": "2025-10-22",
-   "end_date": "2026-03-11",
-   "program_hours": 80,
-   "participants": 19,
-   "completions": 17,
+   "start_date": "2025-10-23",
+   "end_date": "2026-01-01",
+   "program_hours": 40,
+   "participants": 35,
+   "completions": 29,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Sierra Conservation Center (SCC)",
@@ -633,9 +599,26 @@
    "completions": 12,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
+  },
+  {
+   "facility": "California State Prison, Sacramento (SAC)",
+   "yard": "Facility C",
+   "organization": "Kestrel Reentry Learning",
+   "program": "Job Readiness Lab",
+   "status": "Completed",
+   "start_date": "2025-12-06",
+   "end_date": "2026-03-14",
+   "program_hours": 60,
+   "participants": 29,
+   "completions": 26,
+   "notes": "",
+   "data_basis": "estimated",
+   "program_hours_max": null,
+   "participants_max": 36,
+   "completions_max": null
   },
   {
    "facility": "California Correctional Institution (CCI)",
@@ -650,9 +633,9 @@
    "completions": 19,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Wasco State Prison (WSP)",
@@ -667,9 +650,9 @@
    "completions": 33,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Richard J. Donovan Correctional Facility (RJD)",
@@ -684,26 +667,26 @@
    "completions": 33,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "California State Prison, Centinela (CEN)",
+   "facility": "California Correctional Institution (CCI)",
    "yard": "A Yard",
    "organization": "Willowbank Mentoring Circle",
-   "program": "Restorative Conversations",
+   "program": "Peer Mentor Training",
    "status": "Completed",
    "start_date": "2026-02-03",
-   "end_date": "2026-04-28",
-   "program_hours": 48,
+   "end_date": "2026-06-23",
+   "program_hours": 80,
    "participants": 13,
    "completions": 11,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Wasco State Prison (WSP)",
@@ -718,9 +701,43 @@
    "completions": null,
    "notes": "Completion count not yet received from the facility.",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
+  },
+  {
+   "facility": "Pelican Bay State Prison (PBSP)",
+   "yard": "A Yard",
+   "organization": "Willowbank Mentoring Circle",
+   "program": "Restorative Conversations",
+   "status": "Completed",
+   "start_date": "2026-02-19",
+   "end_date": "2026-05-14",
+   "program_hours": 48,
+   "participants": 32,
+   "completions": 27,
+   "notes": "",
+   "data_basis": "reported",
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
+  },
+  {
+   "facility": "Avenal State Prison (ASP)",
+   "yard": "North",
+   "organization": "Kestrel Reentry Learning",
+   "program": "Job Readiness Lab",
+   "status": "Completed",
+   "start_date": "2026-04-06",
+   "end_date": "2026-07-13",
+   "program_hours": 60,
+   "participants": 34,
+   "completions": 26,
+   "notes": "",
+   "data_basis": "reported",
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "San Quentin Rehabilitation Center (SQ)",
@@ -735,9 +752,9 @@
    "completions": 23,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "San Quentin Rehabilitation Center (SQ)",
@@ -752,9 +769,26 @@
    "completions": 19,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
+  },
+  {
+   "facility": "Pelican Bay State Prison (PBSP)",
+   "yard": "D Yard",
+   "organization": "Willowbank Mentoring Circle",
+   "program": "Restorative Conversations",
+   "status": "Completed",
+   "start_date": "2026-05-08",
+   "end_date": "2026-07-31",
+   "program_hours": 48,
+   "participants": 34,
+   "completions": null,
+   "notes": "Completion count not yet received from the facility.",
+   "data_basis": "reported",
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "Sierra Conservation Center (SCC)",
@@ -769,46 +803,12 @@
    "completions": null,
    "notes": "Completion count not yet received from the facility.",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "Richard J. Donovan Correctional Facility (RJD)",
-   "yard": "D Yard",
-   "organization": "Kestrel Reentry Learning",
-   "program": "Job Readiness Lab",
-   "status": "Completed",
-   "start_date": "2026-05-21",
-   "end_date": "2026-08-27",
-   "program_hours": 60,
-   "participants": 28,
-   "completions": 18,
-   "notes": "",
-   "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
-  },
-  {
-   "facility": "Substance Abuse Treatment Facility and State Prison, Corcoran (SATF-CSP, Corcoran)",
-   "yard": "South",
-   "organization": "Kestrel Reentry Learning",
-   "program": "Job Readiness Lab",
-   "status": "In Progress",
-   "start_date": "2026-08-25",
-   "end_date": "2026-12-01",
-   "program_hours": 60,
-   "participants": 17,
-   "completions": null,
-   "notes": "",
-   "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
-  },
-  {
-   "facility": "Wasco State Prison (WSP)",
+   "facility": "Pelican Bay State Prison (PBSP)",
    "yard": "Facility C",
    "organization": "Willowbank Mentoring Circle",
    "program": "Restorative Conversations",
@@ -820,26 +820,26 @@
    "completions": null,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
-   "facility": "Avenal State Prison (ASP)",
-   "yard": "South",
+   "facility": "Substance Abuse Treatment Facility and State Prison, Corcoran (SATF-CSP, Corcoran)",
+   "yard": "Facility C",
    "organization": "Kestrel Reentry Learning",
    "program": "Job Readiness Lab",
    "status": "In Progress",
-   "start_date": "2026-10-22",
-   "end_date": "2027-01-28",
+   "start_date": "2026-10-07",
+   "end_date": "2027-01-13",
    "program_hours": 60,
-   "participants": 14,
+   "participants": 38,
    "completions": null,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   },
   {
    "facility": "San Quentin Rehabilitation Center (SQ)",
@@ -854,9 +854,9 @@
    "completions": null,
    "notes": "",
    "data_basis": "reported",
-   "program_hours_range": null,
-   "participants_range": null,
-   "completions_range": null
+   "program_hours_max": null,
+   "participants_max": null,
+   "completions_max": null
   }
  ]
 }
