@@ -1,0 +1,41 @@
+scripts/check-research.mjs
+  s_e18a058904d990::t_c06fe884ecf0eb 1-19
+server/research.mjs
+  s_e18a058904d990::t_728e29831de32d 1-39
+scripts/build-worker.mjs
+  s_e18a058904d990::t_728e29831de32d 1-11
+scripts/dev-server.mjs
+  s_e18a058904d990::t_728e29831de32d 1-21
+.gitignore
+  s_e18a058904d990::t_695ed6edc9bcc2 4-8
+.openai/hosting.json
+  s_e18a058904d990::t_77256434f89a2d 2
+README.md
+  s_e18a058904d990::t_224934c5f4df55 3,10,29,35,62,70,73-89
+public/roster.css
+  s_e18a058904d990::t_5eccf2c4fd3faf 4
+public/roster.mjs
+  s_e18a058904d990::t_2da1407e38cca6 5-7,17-19,26,31-77,87,107,112-113,129
+scripts/check.mjs
+  s_e18a058904d990::t_c8c32589c36e50 3,30,35,39
+scripts/prepare-data.py
+  s_e18a058904d990::t_e7247195bc7abc 14
+scripts/validate-artifact.mjs
+  s_e18a058904d990::t_d8a6f669606297 1-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9943977c62dcd305279639b3aafe2c5086607e36",
+  "prompts": {},
+  "sessions": {
+    "s_e18a058904d990": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a17051-99b9-7121-aae2-53a576dd79a5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "randomperson12344 <4dennisk@gmail.com>"
+    }
+  }
+}
