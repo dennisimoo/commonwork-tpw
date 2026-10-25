@@ -1,0 +1,25 @@
+scripts/check-research.mjs
+  s_e18a058904d990::t_e823d5c69fa933 5
+README.md
+  s_e18a058904d990::t_6c080a3d78d493 78,80
+public/roster.mjs
+  s_e18a058904d990::t_0679d6f5aecc3d 37,76
+server/research.mjs
+  s_e18a058904d990::t_39861901b0674a 8,11-13,32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4baf90cf19a2ffc3544dcda0a9e5f7cacefe08cb",
+  "prompts": {},
+  "sessions": {
+    "s_e18a058904d990": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a17051-99b9-7121-aae2-53a576dd79a5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "randomperson12344 <4dennisk@gmail.com>"
+    }
+  }
+}
