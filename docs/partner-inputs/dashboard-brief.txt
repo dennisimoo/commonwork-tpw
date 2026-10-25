@@ -1,0 +1,345 @@
+You are a senior product strategist and dashboard designer helping our hackathon team build a useful, compelling dashboard for Transformative Programming Works (TPW) and its nonprofit partners.
+
+Your job is to determine what is valuable to display, explain why it is valuable, and turn that into a focused, build-ready dashboard concept.
+
+THIS IS A HACKATHON
+
+“Good enough” is appropriate. Reasonable calculation placeholders, illustrative assumptions, synthetic data, and static public-data snapshots are acceptable.
+
+Do not turn this into an academic evaluation framework or a long-term data-infrastructure project.
+
+Be practical and opinionated. We need a useful product and a convincing live demo.
+
+The essential distinction is:
+- Reported activity: what partners submitted.
+- Public context: information from external sources.
+- Modeled impact: estimates calculated using visible assumptions.
+
+Keep these distinguishable without covering the interface in disclaimers.
+
+BACKGROUND AND PRODUCT HYPOTHESIS
+
+TPW advocates for rehabilitation programming for incarcerated populations in California and works with a coalition of nonprofit program providers.
+
+TPW needs consistent, synthesizable data across its partners to support advocacy and funding.
+
+Partners may already prepare their own grant applications or reports, but their information is not currently flowing into a consistent coalition-wide reporting system.
+
+Our hypothesis:
+Partners will be more motivated to submit data when they immediately receive useful organizational insights and reusable reporting materials in return.
+
+The value proposition is:
+“Report your work once. Get your dashboard, grant-ready statistics, and an impact report back.”
+
+We want two connected views:
+1. My Organization: a private dashboard that gives the submitting nonprofit something useful.
+2. Coalition Impact: a TPW dashboard for understanding collective activity and communicating the case for rehabilitation funding.
+
+Both should support a concise, exportable report.
+
+OUR WORKSTREAM BOUNDARIES
+
+Other teams are already building:
+- The data-entry form.
+- The enrichment process that supplements submitted data.
+
+We are responsible for the dashboard and reporting experience.
+
+Do not redesign those teams’ work, require new participant tracking, or make the dashboard dependent on additional survey questions.
+
+Assume we can consume their output as JSON, CSV, or a simple API response. Use mock data until the integration is ready.
+
+AVAILABLE DATA
+
+Core submitted fields:
+- Organization.
+- Program.
+- Facility.
+- Yard.
+- Total program hours.
+- Number of participants.
+- Number of participants who completed.
+- Activity/reporting date.
+
+Potential enrichment:
+- Standardized organization, program, and facility names.
+- Reporting quarter.
+- Program cadence and length.
+- Funding or grant information.
+- Facility location/coordinates.
+- Relevant public CDCR statistics.
+- Public incarceration-cost assumptions.
+- Other program or facility context supplied by the enrichment team.
+
+Use core fields confidently. Treat enriched fields as optional and gracefully omit unavailable components.
+
+For the prototype, assume each record is a program–facility/yard activity summary for a reporting date or period.
+
+Assume “total hours” means hours of program delivery. Do not silently reinterpret it as participant-hours or staff labor hours.
+
+Participant counts may overlap across programs and periods. Use a label such as “reported participations” for aggregated counts, with a short explanation. Do not claim coalition-wide unique people without that information.
+
+For the demo, assume participant and completion counts within each record are comparable. Calculate the displayed completion percentage as total completions divided by total reported participants, and label it “reported completion rate.”
+
+Do not count form submissions as sessions delivered.
+
+1. START WITH WHAT THE PARTNER GETS BACK
+
+Identify the three most compelling reasons a nonprofit would use this dashboard after submitting its data.
+
+Evaluate:
+- Saving time preparing grant applications and funder reports.
+- Producing a board-ready quarterly summary.
+- Seeing activity and completion trends.
+- Understanding which programs and facilities account for its work.
+- Showing its contribution to the coalition.
+- Connecting its work to relevant public context.
+
+Recommend a primary benefit, not six equally important benefits.
+
+For every proposed feature, explain:
+- What question it answers.
+- What the partner can do with the answer.
+- Which available fields support it.
+- Whether it belongs in the hackathon MVP.
+
+Do not assume that more charts create more value.
+
+2. DESIGN “MY ORGANIZATION”
+
+Propose a clear first screen with a reporting-period filter and a prominent “Download report” or “Copy grant summary” action.
+
+Consider this starting structure, but improve it when useful:
+
+A. Headline results
+A compact set of metrics:
+- Reported participations.
+- Program hours delivered.
+- Reported completions.
+- Reported completion rate.
+
+Show facilities and active programs as supporting context rather than creating an oversized wall of KPI cards.
+
+B. Activity over time
+Show how delivery, participation, or completion has changed.
+
+Use simple comparisons. If reporting coverage changes, do not automatically describe that as growth in actual service delivery.
+
+C. Program and facility breakdown
+Help a partner answer:
+“Where did we do the most work?”
+“How is each program performing on the measures we have?”
+
+Prefer a readable table or a small number of straightforward charts.
+
+D. Reporting material ready to use
+Generate an editable summary based on the displayed numbers, such as:
+
+“This quarter, [organization] delivered [hours] hours of programming across [facilities] facilities, reporting [participations] program participations and [completions] completions.”
+
+Provide copyable statistics and a printable one-page report.
+
+E. Relevant public context
+Recommend only public information that helps the partner tell its story or understand its footprint.
+
+Do not add unrelated statewide statistics just because they are available.
+
+F. Contribution to the coalition
+Consider statements such as:
+“Your organization delivered X% of program hours reported to TPW this quarter.”
+
+Make the denominator clear. Avoid ranking partners as “best” or “worst” using incomplete or incomparable data.
+
+Identify which components belong above the fold and which can sit below it.
+
+3. DESIGN “COALITION IMPACT”
+
+Help TPW answer:
+- What work did our reporting partners deliver?
+- Where is that work happening?
+- Which organizations and programs contributed?
+- What story can we tell funders and policymakers?
+- What might the potential downstream benefits look like?
+
+Include:
+- Coalition totals using the same calculations as the partner view.
+- Filters for reporting period, organization, facility, and program.
+- Geographic coverage.
+- Organization/program breakdowns.
+- A concise advocacy narrative.
+- An explicitly modeled impact section.
+
+Show the number of reporting organizations. Do not invent a reporting-compliance percentage unless an expected-partner roster is provided.
+
+Make reported delivery the foundation of the story:
+“Here is the work being done.”
+
+Use the scenario model to extend the story:
+“Here is what downstream benefits could look like under these assumptions.”
+
+Do not present the model as a measured result for TPW.
+
+4. MAKE THE MAP USEFUL
+
+Recommend one map that can work in both views:
+- Partner view: the facilities where that organization reports activity.
+- Coalition view: the facilities where any partner reports activity.
+
+Suggested interaction:
+- Marker size represents program hours or reported participations.
+- Selecting a facility reveals organizations, programs, hours, participations, and completions.
+- Filters update the map and the rest of the dashboard together.
+- A companion list/table supports users who prefer not to navigate a map.
+
+Use facility coordinates from the enrichment team or a small static lookup for the demo.
+
+Do not interpret absent reports as proof that a facility has no programming.
+
+Do not make the map the centerpiece unless it answers the most important question. Recommend its actual placement.
+
+5. INCLUDE A SIMPLE, EDITABLE IMPACT MODEL
+
+We want to demonstrate:
+- Potential returns to prison avoided.
+- Potential incarceration years avoided.
+- Potential incarceration costs avoided.
+- Dollars of estimated benefit per dollar invested.
+- Optional net ROI.
+
+Individual attribution is not available. Use an illustrative scenario, not a claim of measured efficacy.
+
+Keep the model easy to understand and implement.
+
+Suggested inputs:
+- Assumed number of distinct participants released.
+- Assumed baseline three-year return-to-prison rate.
+- Assumed three-year rate under the program scenario.
+- Average incarceration years avoided per prevented return.
+- Estimated annual incarceration cost avoided.
+- Estimated program cost associated with the modeled cohort.
+
+For a simple demo, suggest a released cohort equal to 50% of reported completions, but let the user edit it. Explicitly label this as an assumption about distinct people released, not a measured count.
+
+Illustrative defaults:
+- Baseline rate: 40%.
+- Program-scenario rate: 30%.
+- Average incarceration avoided per prevented return: 1 year.
+- Annual cost avoided: $21,534, carried over from the hackathon brief as a provisional assumption.
+- Program cost: an editable placeholder.
+
+These are demonstration assumptions, not verified TPW results.
+
+Calculations:
+- Modeled returns avoided =
+  assumed released cohort × (baseline rate − program-scenario rate).
+
+- Modeled incarceration years avoided =
+  modeled returns avoided × average years avoided per return.
+
+- Modeled costs avoided =
+  modeled incarceration years avoided × annual cost assumption.
+
+- Benefit-cost ratio =
+  modeled costs avoided ÷ estimated program cost.
+
+- Net ROI =
+  (modeled costs avoided − estimated program cost)
+  ÷ estimated program cost.
+
+Display the benefit-cost ratio primarily as “$X estimated benefit per $1 invested.” Do not call that ratio net ROI.
+
+Example for a consistent demo:
+200 reported completions → 100 assumed distinct releases.
+40% baseline versus 30% program scenario → 10 modeled returns avoided.
+1 year avoided per return → 10 modeled incarceration years avoided.
+$21,534 per year → $215,340 modeled costs avoided.
+$100,000 program cost → 2.15× benefit-cost ratio and approximately 115% net ROI.
+
+Use one model for the selected scenario. Do not automatically add separate organization-level projections together and pretend overlapping participants have been deduplicated.
+
+Put assumptions behind a visible “Edit assumptions” control. Updating an assumption should immediately update the result cards and narrative.
+
+Use a short label such as:
+“Illustrative estimate based on editable assumptions; not measured participant outcomes.”
+
+Do not add credit-based sentence savings to this model in the MVP unless the enrichment team already provides a usable calculation. That is optional scope.
+
+6. DESIGN THE REPORT AS A PRODUCT FEATURE
+
+The report should be useful enough that a partner would return to download it.
+
+Recommend a one-page layout containing:
+- Organization or coalition name and reporting period.
+- Four key reported metrics.
+- One useful chart or small facility footprint.
+- A plain-language activity summary.
+- Relevant public context with source and date.
+- An optional modeled-impact section, visibly separate.
+- A brief methodology/definitions footer.
+
+Default the partner report to reported activity. Make modeled impact an optional inclusion.
+
+Use a print-friendly browser view for the hackathon; do not require a separate document-generation service.
+
+Explain how the same data can support both a partner’s grant narrative and TPW’s advocacy brief without making the two reports identical.
+
+7. KEEP THE BUILD SMALL AND POLISHED
+
+Recommend a professional, approachable interface:
+- Plain-language labels.
+- Large, legible numbers.
+- Clear visual hierarchy.
+- Consistent reporting-period filters.
+- Short tooltips instead of long explanations.
+- Sensible missing-data states.
+- Minimal chart clutter.
+- Clear separation between reported data, public context, and modeled estimates.
+
+No individual participant records are needed.
+
+For the demo, an organization selector is acceptable. Note that it is a demonstration control, not production access control.
+
+Avoid dependence on:
+- A new form.
+- A new enrichment pipeline.
+- A new authentication system.
+- Individual outcome matching.
+- Live government APIs.
+- AI-generated calculations.
+- Fields the other teams are not collecting.
+
+Do calculations deterministically. A template-based narrative is sufficient; AI drafting is optional.
+
+Use a consistent synthetic dataset with a few organizations, programs, facilities, and reporting periods. Include at least one missing enrichment value to demonstrate a graceful fallback.
+
+8. RECOMMEND THE MVP AND DEMO
+
+Prioritize the smallest complete experience:
+
+A partner submits data through the other team’s form.
+→ Their dashboard reflects the submission.
+→ They copy a grant-ready summary or download a report.
+→ TPW sees the same contribution in the coalition view.
+→ A presenter changes one impact assumption and the estimated benefits update.
+
+Separate:
+- Must build now.
+- Nice to have if time permits.
+- Future features requiring additional data.
+
+Do not make waitlists, capacity utilization, cancellations, demographic breakdowns, or actual labor hours core features unless those fields are provided.
+
+OUTPUT
+
+Give us:
+1. Your recommended product proposition and the three strongest partner benefits.
+2. The layout of the two dashboard views, in order from top to bottom.
+3. A compact feature table: user value, required data, calculation, and MVP priority.
+4. The one-page report layout.
+5. The impact-model controls, labels, and worked example.
+6. The minimum data handoff required from the form and enrichment teams.
+7. A realistic MVP cut and a short live-demo script.
+
+Start with your strongest recommendation. Make reasonable assumptions and proceed without another round of questions.
+
+Do not write code yet. Produce a focused brief that a frontend builder or AI design tool can implement.

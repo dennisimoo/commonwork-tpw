@@ -1,7 +1,7 @@
 import {escapeHTML as e, number as n, percent, parseCSV, importFields, analyzeImport, toCSV} from './core.mjs';
 
 const main = document.querySelector('main'), dialog = document.querySelector('dialog');
-const names = {directory:'People',overview:'Overview',programs:'Program outcomes',records:'Public records',coalition:'Coalition reports',sources:'Data library'};
+const names = {impact:'Coalition impact',organization:'My organization',research:'Public story research',overview:'Overview',programs:'Program outcomes',records:'Public records',coalition:'Coalition reports',sources:'Data library'};
 const metricNames = {return:'Return to prison',conviction:'Conviction',arrest:'Arrest'};
 let data, selectedCohort='2020-21', metric='return', years=3;
 let importData=null, mapping={}, importedOrganization='all', asOf='2026-10-24', hiddenFields=new Set(), annualCost=21534;
@@ -16,7 +16,7 @@ function modal(html){document.querySelector('#dialog-content').innerHTML=html;if
 document.querySelector('.dialog-close').onclick=()=>dialog.close();
 document.querySelector('.skip').onclick=ev=>{ev.preventDefault();main.focus();};
 dialog.addEventListener('click',ev=>{if(ev.target===dialog){const r=dialog.getBoundingClientRect();if(ev.clientX<r.left||ev.clientX>r.right||ev.clientY<r.top||ev.clientY>r.bottom)dialog.close();}});
-document.querySelector('#about-button').onclick=()=>modal(`<div class="eyebrow">Why this workspace exists</div><h2>Evidence for a second chance.</h2><p>TPW advocates for access and funding for community organizations offering programs in California state prisons. Afterward helps providers organize outcomes and communicate evidence.</p><p>This V1 includes a directory of real named alumni from public stories and California reference outcomes. Public story profiles are not verified TPW enrollment or a representative outcome cohort.</p><p>Coalition imports are processed in this browser tab only. An OpenAI agent uses Exa to research public professional milestones and returns source-linked reports for review. It does not contact anyone or infer criminal risk.</p><a class="button primary spaced" href="https://www.thetpw.org/" target="_blank" rel="noopener">Visit TPW ↗</a>`);
+document.querySelector('#about-button').onclick=()=>modal(`<div class="eyebrow">Why this workspace exists</div><h2>Evidence for a second chance.</h2><p>TPW advocates for access and funding for community organizations offering programs in California state prisons. Afterward helps providers organize outcomes and communicate evidence.</p><p>The main dashboard uses TPW’s supplied Collective Impact workbook to summarize reported participations, program hours and completions. It excludes explicit sample/test entries and keeps missing information visible. Public story research and California context remain separate reference views.</p><p>Coalition imports are processed in this browser tab only. An OpenAI agent uses Exa to research public professional milestones and returns source-linked reports for review. It does not contact anyone or infer criminal risk.</p><a class="button primary spaced" href="https://www.thetpw.org/" target="_blank" rel="noopener">Visit TPW ↗</a>`);
 
 const heading = (eyebrow,title,description,actions='')=>`<div class="page-heading"><div><div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p>${description}</p></div><div class="heading-actions">${actions}</div></div>`;
 const badge = (text,cls='')=>`<span class="badge ${cls}">${text}</span>`;
@@ -66,9 +66,14 @@ function download(filename,content,type='text/csv;charset=utf-8'){
   const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000);
 }
 
+async function renderActivity(view){
+  const {renderImpact}=await import('./impact.mjs');
+  await renderImpact({mount:main,openModal:modal,download,toast,view});
+}
+
 async function renderPeople(){
   const {renderRoster}=await import('./roster.mjs');
-  if(!['','#directory','#participants','#records'].includes(location.hash))return;
+  if(!['#research','#participants'].includes(location.hash))return;
   await renderRoster({mount:main,openModal:modal,download});
 }
 
@@ -127,12 +132,12 @@ function openReport(type,result){
 }
 
 async function route(){
-  const requested=location.hash.slice(1)||'directory';
-  const view=['records','participants'].includes(requested)?'directory':requested;
+  const requested=location.hash.slice(1)||'impact';
+  const view=['directory','records'].includes(requested)?'impact':requested==='participants'?'research':requested;
   if(view==='main'){main.focus();return;}
   document.querySelector('#page-name').textContent=names[view]||'Directory';
   document.querySelectorAll('nav a').forEach(a=>{a.classList.toggle('active',a.dataset.view===view);if(a.dataset.view===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-  try{await ({directory:renderPeople,overview:renderOverview,programs:renderPrograms,coalition:renderCoalition,sources:renderSources}[view]||renderPeople)();}
+  try{await ({impact:()=>renderActivity('coalition'),organization:()=>renderActivity('organization'),research:renderPeople,overview:renderOverview,programs:renderPrograms,coalition:renderCoalition,sources:renderSources}[view]||(()=>renderActivity('coalition')))();}
   catch(err){main.innerHTML=`<div class="panel empty"><h2>We couldn’t load this view.</h2><p>${e(err.message)}</p><a class="button" href="#overview">Return to overview</a></div>`;}
 }
 try{const response=await fetch('data/california.json');if(!response.ok)throw new Error('The public data snapshot is unavailable.');data=await response.json();window.addEventListener('hashchange',route);await route();}

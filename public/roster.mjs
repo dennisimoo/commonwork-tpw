@@ -21,7 +21,7 @@ export async function renderRoster({mount,openModal,download}) {
     try{const response=await fetch('data/public-alumni.json');if(!response.ok)throw Error('Demo profiles unavailable');roster=await response.json();rosterKind='demo';}
     catch{initialized=false;}
   }
-  if(token!==generation||!['','#directory','#participants','#records'].includes(location.hash))return;
+  if(token!==generation||!['#research','#participants'].includes(location.hash))return;
   dialogController?.abort();
   let researchAvailable=false;
   let connectionText='Checking research connection…';
@@ -33,7 +33,7 @@ export async function renderRoster({mount,openModal,download}) {
   <div class="roster-message" role="status" aria-live="polite"></div><div class="roster-mapping"></div>
   <p class="roster-source-note">Starting collection: <a href="https://thelastmile.org/students/" target="_blank" rel="noopener noreferrer">The Last Mile · Student Stories ↗</a> · Twelve sourced adults for this demo. Import an authorized program list to research your own alumni.</p><div class="roster-content"></div><div class="roster-bottom"><span>Research stays in this tab · export to keep your results</span><span>Research connection: <strong class="roster-research-status">Checking research connection…</strong></span></div></div>`;
   const root=mount.querySelector('.roster'), $=s=>root.querySelector(s);
-  const current=()=>token===generation&&root.isConnected&&['','#directory','#participants','#records'].includes(location.hash);
+  const current=()=>token===generation&&root.isConnected&&['#research','#participants'].includes(location.hash);
   let visibleRows=[];
   function showMessage(text,error=false){$('.roster-message').textContent=text;$('.roster-message').classList.toggle('roster-error',error);}
   const formatDate=value=>{if(!value)return 'Date not provided';const date=new Date(value);return Number.isNaN(+date)?'Date not provided':date.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric',timeZone:'UTC'});};

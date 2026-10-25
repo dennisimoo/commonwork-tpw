@@ -1,6 +1,29 @@
 # Afterward · TPW Outcomes
 
-A named people directory with an OpenAI research agent, Exa search, and separate California outcome reporting. No synthetic people are shipped.
+A localhost dashboard for TPW and its nonprofit partners. The primary views are Coalition impact and My organization, based on the user-supplied Collective Impact workbook. Public story research and California reference outcomes remain separate tools. No synthetic activity records are introduced.
+
+## Collective impact dashboard
+
+Open http://localhost:4173/#impact (the old #directory URL also opens this view), or #organization for a partner dashboard. The current data has 36 retained program/facility activity records from Defy Ventures and GRIP Training Institute: 1,441 reported participations, 4,552 known program/course hours and 739 known completions. One explicit SAMPLE DATA row and one Test form response are excluded. Remaining records are partner-supplied, not independently verified.
+
+The completion rate is 739 / 1,261 = 58.6% over 31 records with both counts; missing completions are not treated as zero. Five records have missing counts/hours. Three possible overlapping groups are retained for provider review. There is no participant-level deduplication, attendance inference or session count.
+
+Use the start-year, organization, facility, program and status filters; drill into the facility tables or source receipts; edit/copy the grant summary; export selected CSV or a print-ready HTML report. The optional scenario is calculated deterministically from editable distinct-release, rate, years and cost assumptions. Reports default to activity only. Whole-course totals are grouped by course start year, not allocated to quarters or represented as annual delivered hours.
+
+The dashboard consumes canonical JSON records or CSV including the workbook's original column headings. Extra fields remain on records and exports. No new survey questions or forms are required. Imports replace tab data and disappear on reload; this prototype's organization selector is not an access control system. There is no production database or live form integration.
+
+Minimum handoff fields: organization, program, facility; optional yard, status, start_date, end_date, program_hours, participants, completions and notes. Count/hour values may be null when unknown. Counts must be nonnegative integers, hours nonnegative numbers, and dates YYYY-MM-DD. Upstream teams should clarify course-hours vs actual delivered-hours before making delivery claims. See docs/partner-inputs/README.md for source details and unavailable references.
+
+To regenerate the supplied workbook snapshot without modifying the original:
+
+```sh
+python3 scripts/extract-impact.py "/path/to/TPW - Collective Impact Report.xlsx"
+node scripts/check-impact.mjs
+```
+
+## Local development
+
+Run `node scripts/dev-server.mjs` and open http://localhost:4173. The impact dashboard works without API keys. For public-story research, copy `.env.example` to `.env`, fill the two keys, and run `node --env-file=.env scripts/dev-server.mjs`. Never commit `.env`. No build step is required for ordinary frontend changes. This repository is private; GitHub publishing stores source only and does not deploy or change the running hosted Site. Keep further work localhost-only unless explicitly requested otherwise.
 
 ## People and provenance
 
@@ -40,6 +63,7 @@ CA outcomes and Programs use official CDCR reports: 180 statewide measurements a
 node --check public/app.mjs
 node --check public/roster.mjs
 node scripts/check.mjs
+node scripts/check-impact.mjs
 node scripts/check-research.mjs
 node scripts/build-worker.mjs
 node scripts/validate-artifact.mjs

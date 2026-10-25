@@ -8,7 +8,7 @@ const server=createServer(async(req,res)=>{
   try{
     const url=new URL(req.url,`http://localhost:${port}`);
     if(url.pathname.startsWith('/api/research')){
-      const pool=process.env.EXA_API_KEY?null:JSON.parse(await readFile('/Users/dennis/exa_keys.json','utf8'));
+      const pool=process.env.EXA_API_KEY?null:JSON.parse(await readFile('/Users/dennis/exa_keys.json','utf8').catch(()=>'{}'));
       const body=[];for await(const chunk of req){body.push(chunk);if(body.reduce((n,b)=>n+b.length,0)>4096){res.writeHead(413);res.end('Request too large');return;}}
       const request=new Request(url,{method:req.method,headers:req.headers,...(!['GET','HEAD'].includes(req.method)?{body:Buffer.concat(body)}:{})});
       const response=await handleResearch(request,{EXA_API_KEY:process.env.EXA_API_KEY||pool?.active_key,OPENAI_API_KEY:process.env.OPENAI_API_KEY,OPENAI_MODEL:process.env.OPENAI_MODEL});res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()));return;
